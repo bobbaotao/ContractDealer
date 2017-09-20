@@ -1,9 +1,13 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Hello from '@/components/Hello'
-import IECompany from '@/components/IECompany'
-import HomePage from '@/components/HomePage'
-import NewACCompany from '@/components/NewACCompany'
+//import Hello from '@/components/Hello'
+//import IECompany from '@/components/IECompany'
+import HomePage from '@/components/PortalWeb/HomePage'
+//import NewACCompany from '@/components/NewACCompany'
+import ErrorPage from '@/components/ErrorPage'
+import ZeissHomePage from '@/components/ZeissWeb/ZeissHomePage'
+import ZeissTask from '@/components/ZeissWeb/ZeissTask'
+import DealerDetail from '@/components/ZeissWeb/DealerDetail'
 
 Vue.use(Router)
 
@@ -13,16 +17,41 @@ export default new Router({
       path: '/',
       name: 'HomePage',
       component: HomePage
-    },
-    {
-      path: '/IECompany',
-      name: 'IECompany',
-      component: IECompany
-    },
-    {
-      path: '/NewACCompany',
-      name: 'NewACCompany',
-      component: NewACCompany
     }
+    ,
+    {
+      path: '/ErrorPage',
+      name: 'ErrorPage',
+      component: ErrorPage
+    }
+    ,
+    {
+      path: '/ZeissHomePage',
+      name: 'ZeissHomePage',
+      component: ZeissHomePage
+    }
+    ,
+    {
+      path: '/ZeissTask',
+      name: 'ZeissTask',
+      component: ZeissTask
+    }
+    ,
+    {
+      path: '/DealerDetail/:dealerId',
+      name: 'DealerDetail',
+      component: DealerDetail
+    }
+    // ,
+    // {
+    //   path: '/IECompany',
+    //   name: 'IECompany',
+    //   component: IECompany
+    // },
+    // {
+    //   path: '/NewACCompany',
+    //   name: 'NewACCompany',
+    //   component: NewACCompany
+    // }
   ]
 })

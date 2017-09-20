@@ -1,6 +1,11 @@
+var moment = require('moment');
+
 module.exports = {
-  fileBaseUrl: "http://10.22.83.55:8080/Service/FileUploadHandler.ashx",
-  serviceUrl: "http://10.22.83.55:8080/Service/DealerHandler.ashx",
+  fileBaseUrl: "../FileUploadHandler.ashx",
+  serviceUrl: "../DealerHandler.ashx",
+  cdServiceUrl: "/_vti_bin/Zeiss.SpotDealer/DealerService.svc",
+  zeissFileBaseUrl: "../FileHandler.ashx",
+  dateFormat: "YYYY-MM-DD",
   newIECompany: function() {
     // get an new IECompany
     return {
@@ -10,7 +15,7 @@ module.exports = {
       // business lience info.
       blDate: null,
       blfile: {
-        name: '等待上传',
+        name: '',
         url: '',
         status: '',
         fileId: 0
@@ -18,7 +23,7 @@ module.exports = {
       // Tax registration certificate
       trcDate: null,
       trcfile: {
-        name: '等待上传',
+        name: '',
         url: '',
         status: '',
         fileId: 0
@@ -26,7 +31,21 @@ module.exports = {
       //Organization certificate
       ocDate: null,
       ocfile: {
-        name: '等待上传',
+        name: '',
+        url: '',
+        status: '',
+        fileId: 0
+      },
+      mlDate: null,
+      mlfile: {
+        name: '',
+        url: '',
+        status: '',
+        fileId: 0
+      },
+      blfmdDate: null,
+      blfmdfile: {
+        name: '',
         url: '',
         status: '',
         fileId: 0
@@ -46,24 +65,68 @@ module.exports = {
       trcfile: data.trcfile,
       //Organization certificate
       ocDate: data.ocDate,
-      ocfile: data.ocfile
+      ocfile: data.ocfile,
+      //medical lience
+      mlDate: data.mlDate,
+      mlfile: data.mlfile,
+      //business lience for medical device class 2
+      blfmdDate: data.blfmdDate,
+      blfmdfile: data.blfmdfile
     }
   },
   formartToPostData: function(data) {
+    var blDate = "";
+    var trcDate = "";
+    var ocDate = "";
+    var mlDate = "";
+    var blfmdDate = "";
+    if(data.blDate != null && data.blDate != new Date())
+    {
+      blDate = moment(data.blDate).format(this.dateFormat);
+    }
+    if(data.trcDate != null && data.trcDate != new Date())
+    {
+      trcDate = moment(data.trcDate).format(this.dateFormat);
+    }
+    if(data.ocDate != null && data.ocDate != new Date())
+    {
+      ocDate = moment(data.ocDate).format(this.dateFormat);
+    }
+    if(data.mlDate != null && data.mlDate != new Date())
+    {
+      mlDate = moment(data.mlDate).format(this.dateFormat);
+    }
+    if(data.blfmdDate != null && data.blfmdDate != new Date())
+    {
+      blfmdDate = moment(data.blfmdDate).format(this.dateFormat);
+    }
+
     return {
       Id: data.companyInfoId,
       DealerId: '',
       IECompanyName: data.companyName,
       IsInOne: data.isThreeInOne,
+
       BLDocID: data.blfile.fileId,
-      BLExpireDate: data.blDate == null ? new Date(2999,12,31) :  data.blDate,
+      BLExpireDate: blDate,
       BLDocTitle: data.blfile.name,
+
       TRCDocID: data.trcfile.fileId,
-      TRCExpireDate: data.trcDate == null ? new Date(2999,12,31) :  data.trcDate,
+      TRCExpireDate: trcDate,
       TRDocTitle: data.trcfile.name,
+
       OCDocID: data.ocfile.fileId,
-      OCExpireDate: data.ocDate == null ? new Date(2999,12,31) :  data.ocDate,
-      OCDocTitle: data.ocfile.name
+      OCExpireDate: ocDate,
+      OCDocTitle: data.ocfile.name,
+
+      MLDocID: data.mlfile.fileId,
+      MLExpireDate: mlDate,
+      MLDocTitle: data.mlfile.name,
+
+      BLFMDDocID: data.blfmdfile.fileId,
+      BLFMDExpireDate: blfmdDate,
+      BLFMDDocTitle: data.blfmdfile.name
+
     }
   },
   getIEItemFromServerData: function(data) {
@@ -72,7 +135,7 @@ module.exports = {
       companyName: data.IECompanyName,
       isThreeInOne: data.IsInOne,
       // business lience info.
-      blDate: data.BLExpireDate,
+      blDate: data.BLExpireDate == "" ? null : moment(data.BLExpireDate, this.dateFormat).toDate(),
       blfile: {
         name: data.BLDocTitle,
         url: this.fileBaseUrl + "?method=load&fileid=" + data.BLDocID,
@@ -80,7 +143,7 @@ module.exports = {
         fileId: data.BLDocID
       },
       // Tax registration certificate
-      trcDate: data.TRCExpireDate,
+      trcDate: data.TRCExpireDate == "" ? null : moment(data.TRCExpireDate, this.dateFormat).toDate(),
       trcfile:{
         name: data.TRDocTitle,
         url: this.fileBaseUrl + "?method=load&fileid=" + data.TRCDocID,
@@ -88,12 +151,28 @@ module.exports = {
         fileId: data.TRCDocID
       },
       //Organization certificate
-      ocDate: data.OCExpireDate,
+      ocDate: data.OCExpireDate == "" ? null : moment(data.OCExpireDate, this.dateFormat).toDate(),
       ocfile: {
         name: data.OCDocTitle,
         url: this.fileBaseUrl + "?method=load&fileid=" + data.OCDocID,
         status: '',
         fileId: data.OCDocID
+      },
+      //medical lience
+      mlDate: data.MLExpireDate == "" ? null : moment(data.MLExpireDate, this.dateFormat).toDate(),
+      mlfile: {
+        name: data.MLDocTitle,
+        url: this.fileBaseUrl + "?method=load&fileid=" + data.MLDocID,
+        status: '',
+        fileId: data.MLDocID
+      },
+      //medical lience
+      blfmdDate: data.BLFMDExpireDate == "" ? null : moment(data.BLFMDExpireDate, this.dateFormat).toDate(),
+      blfmdfile: {
+        name: data.BLFMDDocTitle,
+        url: this.fileBaseUrl + "?method=load&fileid=" + data.BLFMDDocID,
+        status: '',
+        fileId: data.BLFMDDocID
       }
     }
   }
