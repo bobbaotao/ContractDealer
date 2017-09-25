@@ -33,7 +33,7 @@
   var array = require('array');
 
   export default {
-    name: "ZeissHomePage",
+    name: "AllContractDealerPage",
     data () {
       return {
         cdServiceUrl: defaultData.cdServiceUrl,
@@ -42,7 +42,7 @@
         inProcessCDData: null,
         approvedCDData: null,
         activeName: 'first',
-        navKey: 'MyCD'
+        navKey: 'AllCD'
       }
     },
     components: { DealerList, TopNav},
@@ -58,12 +58,12 @@
         curLoadingInstance.close();
       },
       LoadContractDealersFromServer: function() {
-        var requestUrl = this.cdServiceUrl + "/LoadAllContractDealerByCurrentUser";
+        var requestUrl = this.cdServiceUrl + "/LoadAllContractDealer";
         this.ShowLoadingView();
         this.axios.post(requestUrl).then((response) => {
           this.HideLoadingView();
-          if(response.data.GetContractDealerListByCurrentUserResult.Status == "success") {
-            this.allCDData = response.data.GetContractDealerListByCurrentUserResult.Data;
+          if(response.data.GetContractDealerListResult.Status == "success") {
+            this.allCDData = response.data.GetContractDealerListResult.Data;
             this.notSubmitCDData = null;
             this.inProcessCDData = null;
             this.approvedCDData = null;
@@ -88,7 +88,7 @@
               this.approvedCDData = adArr.toArray();
             }
           } else {
-            this.$message.error(response.data.GetContractDealerListByCurrentUserResult.Message);
+            this.$message.error(response.data.GetContractDealerListResult.Message);
           }
         }).catch((error) => {
           this.HideLoadingView();

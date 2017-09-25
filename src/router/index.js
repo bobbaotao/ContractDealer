@@ -6,6 +6,7 @@ import HomePage from '@/components/PortalWeb/HomePage'
 //import NewACCompany from '@/components/NewACCompany'
 import ErrorPage from '@/components/ErrorPage'
 import ZeissHomePage from '@/components/ZeissWeb/ZeissHomePage'
+import AllContractDealerPage from '@/components/ZeissWeb/AllContractDealerPage'
 import ZeissTask from '@/components/ZeissWeb/ZeissTask'
 import DealerDetail from '@/components/ZeissWeb/DealerDetail'
 
@@ -35,6 +36,12 @@ export default new Router({
       path: '/ZeissTask',
       name: 'ZeissTask',
       component: ZeissTask
+    }
+    ,
+    {
+      path: '/AllContractDealerPage',
+      name: 'AllContractDealerPage',
+      component: AllContractDealerPage
     }
     ,
     {

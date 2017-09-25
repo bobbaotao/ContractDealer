@@ -175,5 +175,53 @@ module.exports = {
         fileId: data.BLFMDDocID
       }
     }
+  },
+  getZeissIEItemFromServerData: function(data) {
+    return {
+      companyInfoId: data.Id,
+      companyName: data.IECompanyName,
+      isThreeInOne: data.IsInOne,
+      // business lience info.
+      blDate: data.BLExpireDate == "" ? null : moment(data.BLExpireDate, this.dateFormat).toDate(),
+      blfile: {
+        name: data.BLDocTitle,
+        url: this.zeissFileBaseUrl + "?method=load&fileid=" + data.BLDocID,
+        status: '',
+        fileId: data.BLDocID
+      },
+      // Tax registration certificate
+      trcDate: data.TRCExpireDate == "" ? null : moment(data.TRCExpireDate, this.dateFormat).toDate(),
+      trcfile:{
+        name: data.TRDocTitle,
+        url: this.zeissFileBaseUrl + "?method=load&fileid=" + data.TRCDocID,
+        status: '',
+        fileId: data.TRCDocID
+      },
+      //Organization certificate
+      ocDate: data.OCExpireDate == "" ? null : moment(data.OCExpireDate, this.dateFormat).toDate(),
+      ocfile: {
+        name: data.OCDocTitle,
+        url: this.zeissFileBaseUrl + "?method=load&fileid=" + data.OCDocID,
+        status: '',
+        fileId: data.OCDocID
+      },
+      //medical lience
+      mlDate: data.MLExpireDate == "" ? null : moment(data.MLExpireDate, this.dateFormat).toDate(),
+      mlfile: {
+        name: data.MLDocTitle,
+        url: this.zeissFileBaseUrl + "?method=load&fileid=" + data.MLDocID,
+        status: '',
+        fileId: data.MLDocID
+      },
+      //medical lience
+      blfmdDate: data.BLFMDExpireDate == "" ? null : moment(data.BLFMDExpireDate, this.dateFormat).toDate(),
+      blfmdfile: {
+        name: data.BLFMDDocTitle,
+        url: this.zeissFileBaseUrl + "?method=load&fileid=" + data.BLFMDDocID,
+        status: '',
+        fileId: data.BLFMDDocID
+      }
+    }
   }
+
 }
