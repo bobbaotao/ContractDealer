@@ -11,10 +11,11 @@
       <el-col :span="24">
         <el-table :data="resultData" border stripe style="width:100%;">
           <el-table-column label="Company Name" prop="DealerName">
-
+            <template scope="scope">
+              <a v-on:click="GotoDealerDetail(scope.row)">{{scope.row.DealerName}}</a>
+            </template>
           </el-table-column>
           <el-table-column label="Approver" prop="Approver">
-
           </el-table-column>
           <el-table-column label="Status" prop="TaskStatus">
             <template scope="scope">
@@ -93,6 +94,9 @@
       },
       GetDate: function(value) {
         return new moment(value).format(defaultData.dateFormat);
+      },
+      GotoDealerDetail: function(task) {
+        this.$router.push({name: 'TaskDetail', params: {dealerId: task.DealerID, taskId: task.TaskID}});
       }
     }
   }

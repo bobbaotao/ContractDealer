@@ -4,6 +4,7 @@
     <el-menu-item index="MyCD" >My Contract Dealer</el-menu-item>
     <el-menu-item index="AllCD" >All Contract Dealer</el-menu-item>
     <el-menu-item index="MyTask" >My Task</el-menu-item>
+    <el-menu-item index="AllAC">Affiliated Dealers</el-menu-item>
   </el-menu>
 </template>
 
@@ -27,6 +28,9 @@
          case "MyTask":
           this.$router.push({name: 'ZeissTask'});
           break;
+          case "AllAC":
+           this.$router.push({name: 'ACDealerPage'});
+           break;
          default:
            break;
        }

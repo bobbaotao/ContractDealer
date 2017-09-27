@@ -88,7 +88,7 @@
   var array = require('array');
 
   export default {
-    name: 'DealerDetail',
+    name: 'TaskDetail',
     data () {
       return {
         navKey: '1',
@@ -124,23 +124,25 @@
     watch: {
     '$route' (to, from) {
       // 对路由变化作出响应...
-        if(this.$route.params && this.$route.params.dealerId) {
+        if(this.$route.params && this.$route.params.dealerId && this.$route.params.taskId) {
+          this.taskID = this.$route.params.taskId;
           this.dealerId = this.$route.params.dealerId;
           this.activeName = "first";
           this.LoadDealerDetailFromServer();
         } else {
-          this.$message.error("no dealer id!");
+          this.$message.error("no dealer id or task id!");
         }
       }
     },
     created: function() {
       //this.test();
-      if(this.$route.params && this.$route.params.dealerId) {
+      if(this.$route.params && this.$route.params.dealerId && this.$route.params.taskId) {
+        this.taskID = this.$route.params.taskId;
         this.dealerId = this.$route.params.dealerId;
         this.activeName = "first";
         this.LoadDealerDetailFromServer();
       } else {
-        this.$message.error("no dealer id!");
+        this.$message.error("no dealer id or task id!");
       }
     },
     methods:{

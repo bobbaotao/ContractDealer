@@ -8,16 +8,16 @@
       <el-row>
         <el-tabs v-model="activeName" type="card">
           <el-tab-pane label="All" name="first">
-            <DealerList v-bind:initData="allCDData"></DealerList>
+            <DealerList v-bind:initData="allCDData" v-bind:dealerType="'2'"></DealerList>
           </el-tab-pane>
           <el-tab-pane label="Not Submitted" name="second">
-            <DealerList v-bind:initData="notSubmitCDData"></DealerList>
+            <DealerList v-bind:initData="notSubmitCDData" v-bind:dealerType="'2'"></DealerList>
           </el-tab-pane>
           <el-tab-pane label="In Process" name="third">
-            <DealerList v-bind:initData="inProcessCDData"></DealerList>
+            <DealerList v-bind:initData="inProcessCDData" v-bind:dealerType="'2'"></DealerList>
           </el-tab-pane>
           <el-tab-pane label="Approved" name="fourth">
-            <DealerList v-bind:initData="approvedCDData"></DealerList>
+            <DealerList v-bind:initData="approvedCDData" v-bind:dealerType="'2'"></DealerList>
           </el-tab-pane>
         </el-tabs>
       </el-row>
@@ -58,7 +58,7 @@
         curLoadingInstance.close();
       },
       LoadContractDealersFromServer: function() {
-        var requestUrl = this.cdServiceUrl + "/LoadAllContractDealer";
+        var requestUrl = this.cdServiceUrl + "/LoadAllContractDealer/2";
         this.ShowLoadingView();
         this.axios.post(requestUrl).then((response) => {
           this.HideLoadingView();

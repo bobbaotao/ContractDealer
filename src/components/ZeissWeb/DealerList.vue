@@ -18,7 +18,7 @@
           {{GetStatus(scope.row)}}
         </template>
       </el-table-column>
-      <el-table-column label="IEAC Status" prop="ieacStatus"  min-width="110">
+      <el-table-column label="IEAC Status" prop="ieacStatus" v-if="dealerType == '2'" min-width="110">
         <template scope="scope">
           {{GetMappingStatus(scope.row)}}
         </template>
@@ -65,7 +65,7 @@
         resultData:[]
       }
     },
-    props: ['initData'],
+    props: ['initData', 'dealerType'],
     watch: {
       initData: function(newData) {
         this.resultData = this.initData;

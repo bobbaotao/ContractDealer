@@ -8,16 +8,16 @@
       <el-row>
         <el-tabs v-model="activeName" type="card">
           <el-tab-pane label="All" name="first">
-            <DealerList v-bind:initData="allCDData" v-bind:dealerType="'2'"></DealerList>
+            <DealerList v-bind:initData="allACData" v-bind:dealerType="'3'"></DealerList>
           </el-tab-pane>
           <el-tab-pane label="Not Submitted" name="second">
-            <DealerList v-bind:initData="notSubmitCDData" v-bind:dealerType="'2'"></DealerList>
+            <DealerList v-bind:initData="notSubmitACData" v-bind:dealerType="'3'"></DealerList>
           </el-tab-pane>
           <el-tab-pane label="In Process" name="third">
-            <DealerList v-bind:initData="inProcessCDData" v-bind:dealerType="'2'"></DealerList>
+            <DealerList v-bind:initData="inProcessACData" v-bind:dealerType="'3'"></DealerList>
           </el-tab-pane>
           <el-tab-pane label="Approved" name="fourth">
-            <DealerList v-bind:initData="approvedCDData" v-bind:dealerType="'2'"></DealerList>
+            <DealerList v-bind:initData="approvedACData" v-bind:dealerType="'3'"></DealerList>
           </el-tab-pane>
         </el-tabs>
       </el-row>
@@ -33,16 +33,16 @@
   var array = require('array');
 
   export default {
-    name: "ZeissHomePage",
+    name: "ACDealerPage",
     data () {
       return {
         cdServiceUrl: defaultData.cdServiceUrl,
-        allCDData: null,
-        notSubmitCDData: null,
-        inProcessCDData: null,
-        approvedCDData: null,
+        allACData: null,
+        notSubmitACData: null,
+        inProcessACData: null,
+        approvedACData: null,
         activeName: 'first',
-        navKey: 'MyCD'
+        navKey: 'AllAC'
       }
     },
     components: { DealerList, TopNav},
@@ -58,22 +58,22 @@
         curLoadingInstance.close();
       },
       LoadContractDealersFromServer: function() {
-        var requestUrl = this.cdServiceUrl + "/LoadAllContractDealerByCurrentUser/2";
+        var requestUrl = this.cdServiceUrl + "/LoadAllContractDealer/3";
         this.ShowLoadingView();
         this.axios.post(requestUrl).then((response) => {
           this.HideLoadingView();
-          if(response.data.GetContractDealerListByCurrentUserResult.Status == "success") {
-            this.allCDData = response.data.GetContractDealerListByCurrentUserResult.Data;
-            this.notSubmitCDData = null;
-            this.inProcessCDData = null;
-            this.approvedCDData = null;
-            if(this.allCDData && this.allCDData.length > 0) {
+          if(response.data.GetContractDealerListResult.Status == "success") {
+            this.allACData = response.data.GetContractDealerListResult.Data;
+            this.notSubmitACData = null;
+            this.inProcessACData = null;
+            this.approvedACData = null;
+            if(this.allACData && this.allACData.length > 0) {
               var nsArr = new array();
               var ipArr = new array();
               var adArr = new array();
-              for(var key in this.allCDData)
+              for(var key in this.allACData)
               {
-                  var item = this.allCDData[key];
+                  var item = this.allACData[key];
                   if(item.dealerStatus == "0" || item.dealerStatus == "1")
                   {
                     nsArr.push(item);
@@ -83,12 +83,12 @@
                     adArr.push(item);
                   }
               }
-              this.notSubmitCDData = nsArr.toArray();
-              this.inProcessCDData = ipArr.toArray();
-              this.approvedCDData = adArr.toArray();
+              this.notSubmitACData = nsArr.toArray();
+              this.inProcessACData = ipArr.toArray();
+              this.approvedACData = adArr.toArray();
             }
           } else {
-            this.$message.error(response.data.GetContractDealerListByCurrentUserResult.Message);
+            this.$message.error(response.data.GetContractDealerListResult.Message);
           }
         }).catch((error) => {
           this.HideLoadingView();

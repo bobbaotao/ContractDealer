@@ -9,6 +9,8 @@ import ZeissHomePage from '@/components/ZeissWeb/ZeissHomePage'
 import AllContractDealerPage from '@/components/ZeissWeb/AllContractDealerPage'
 import ZeissTask from '@/components/ZeissWeb/ZeissTask'
 import DealerDetail from '@/components/ZeissWeb/DealerDetail'
+import ACDealerPage from '@/components/ZeissWeb/ACDealerList'
+import TaskDetail from '@/components/ZeissWeb/TaskDetail'
 
 Vue.use(Router)
 
@@ -45,9 +47,21 @@ export default new Router({
     }
     ,
     {
-      path: '/DealerDetail/:dealerId',
-      name: 'DealerDetail',
-      component: DealerDetail
+      path: '/TaskDetail/:dealerId/:taskId',
+      name: 'TaskDetail',
+      component: TaskDetail
+    }
+    ,
+    {
+        path: '/DealerDetail/:dealerId',
+        name: 'DealerDetail',
+        component: DealerDetail
+    }
+    ,
+    {
+      path: '/ACDealerPage',
+      name: 'ACDealerPage',
+      component: ACDealerPage
     }
     // ,
     // {
