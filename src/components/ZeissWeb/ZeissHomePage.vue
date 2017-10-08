@@ -74,10 +74,11 @@
               for(var key in this.allCDData)
               {
                   var item = this.allCDData[key];
-                  if(item.dealerStatus == "0" || item.dealerStatus == "1")
+                  if(item.dealerStatus == "0" || item.dealerStatus == "1"
+                  || item.ieacStatus == "0" || item.ieacStatus == "1")
                   {
                     nsArr.push(item);
-                  } else if (item.dealerStatus == "2") {
+                  } else if (item.dealerStatus == "2" && item.ieacStatus == "2") {
                     ipArr.push(item);
                   } else {
                     adArr.push(item);

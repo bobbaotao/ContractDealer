@@ -52,8 +52,8 @@
           <el-tabs v-model="activeName" type="card">
             <el-tab-pane label="Dealer Info" name="first">
               <DealerInfo v-if="dealerInfoData != null"
-                          :dealerInfoData="dealerInfoData"
-                          :dealerInfoDocData="dealerInfoDocData">
+                          v-bind:dealerInfoData="dealerInfoData"
+                          v-bind:dealerInfoDocData="dealerInfoDocData">
               </DealerInfo>
               <span v-else>
                 该供应商尚未提交信息表
@@ -61,12 +61,13 @@
             </el-tab-pane>
             <el-tab-pane label="IE Company & Affiliated Company" name="second" v-if="dealerSummaryInfo.dealerType == '2'">
               <ACIEView v-if="(ieCompanyData != null &&  ieCompanyData.length && ieCompanyData.length > 0) || (acDealerData != null && acDealerData.length && acDealerData.length > 0)"
-                        :ieCompanyData="ieCompanyData" :acDealerData="acDealerData">
+                        :ieCompanyData="ieCompanyData" :acDealerData="acDealerData" :allowApproval="true" v-on:approve="handleMappingApproval">
               </ACIEView>
               <span v-else>
-                改供应商尚未提交关联公司以及进出口公司
+                该供应商尚未提交关联公司以及进出口公司
               </span>
             </el-tab-pane>
+
           </el-tabs>
         </el-col>
       </el-row>
@@ -101,7 +102,7 @@
         ieCompanyData: null,
         approvalInfo: {
           CurTasks: null,
-          IsAllowCurrentUserApprove: false,
+          IsAllowCurrentUserApprove: true,
           IsAllowCurrentUserStartSIWF: false,
           SelfInfoWFStatus: "1"
         },
@@ -213,9 +214,38 @@
         });
       },
       ValidateDealerInfo: function(status) {
-        var requestUrl = defaultData.cdServiceUrl +  "/ValidateACDealerInfo/" + this.dealerId + "/" + status;
+        if(status == "ACTIVE") {
+          var requestParam = {
+              taskParams: {
+                TaskID : this.dealerId ,
+                TaskStatus : status,
+                Comments : ""
+              }
+            };
+            this.UpdateACDealerStatus(requestParam);
+        } else if(status == "INACTIVE") {
+          this.$confirm('Please input comments', 'Comments', {
+              confirmButtonText: 'Confirm',
+              cancelButtonText: 'Close',
+              showInput: true
+            }).then(({ value }) => {
+              var requestParam = {
+                  taskParams: {
+                    TaskID : this.dealerId,
+                    TaskStatus : status,
+                    Comments : value
+                  }
+                };
+                this.UpdateACDealerStatus( requestParam);
+            }).catch(() => {
+
+            });
+        }
+      },
+      UpdateACDealerStatus: function(requestParam) {
+        var requestUrl = defaultData.cdServiceUrl +  "/ValidateACDealerInfo"; //"/" + this.dealerId + "/" + status;
         this.ShowLoadingView();
-        this.axios.post(requestUrl).then((response) => {
+        this.axios.post(requestUrl, requestParam).then((response) => {
             this.HideLoadingView();
             if(response.data && response.data.ValidateACDealerInfoResult) {
               if(response.data.ValidateACDealerInfoResult.Status == "success")
@@ -233,6 +263,77 @@
         }).catch((error) => {
           this.HideLoadingView();
           this.$message.error(error.message);
+        });
+      },
+      handleMappingApproval: function(mappingValue, status) {
+        var requestUrl = defaultData.cdServiceUrl +  "/ApproveDealerMapping"; //"/" + value.MappingId + "/";
+        if(status == "Reject") {
+          this.$confirm('Please input comments', 'Comments', {
+              confirmButtonText: 'Confirm',
+              cancelButtonText: 'Close',
+              showInput: true
+            }).then(({ value }) => {
+              var requestParam = {
+                  taskParams: {
+                    TaskID : mappingValue.MappingId,
+                    TaskStatus : "3",
+                    Comments : value
+                  }
+                };
+                this.ApproveACDealer(requestUrl, requestParam);
+            }).catch(() => {
+
+            });
+
+        } else if (status == "Approve") {
+          var requestParam = {
+              taskParams: {
+              TaskID : mappingValue.MappingId,
+              TaskStatus : "2",
+              Comments : ""
+            }
+          };
+          this.ApproveACDealer(requestUrl, requestParam);
+        }
+      },
+      ApproveACDealer: function(requestUrl, requestParam) {
+        this.ShowLoadingView();
+
+        this.axios.post(requestUrl, requestParam).then((response) => {
+          this.HideLoadingView();
+          //TODO
+          if(response.status == "200" && response.data.ApproveDealerMappingResult.Status == "success")
+          {
+            this.$message("Action success!");
+            this.LoadACDealerInfoFromServer();
+          } else if (response.status == "200"){
+            this.$message.error(response.data.ApproveDealerMappingResult.Message);
+          } else {
+            this.$message.error(response.message);
+          }
+        }).catch((error) => {
+          this.HideLoadingView();
+          this.$message.error(error.message);
+        });
+      },
+      LoadACDealerInfoFromServer: function() {
+        var requestUrl = defaultData.cdServiceUrl +  "/LoadACDealerInfo/" + this.dealerId;
+        this.ShowLoadingView();
+
+        this.axios.post(requestUrl).then((response) => {
+          this.HideLoadingView();
+          //TODO
+          if(response.status == "200" && response.data.LoadACDealerInfoResult.Status == "success")
+          {
+            this.acDealerData = response.data.LoadACDealerInfoResult.Data;
+          } else if (response.status == "200") {
+              this.$message.error(response.data.LoadACDealerInfoResult.Message);
+          } else {
+            this.$message.error(response.message);
+          }
+        }).catch((error) => {
+          this.HideLoadingView();
+          this.$message.error(errr.message);
         });
       },
       GetStatus: function(value) {

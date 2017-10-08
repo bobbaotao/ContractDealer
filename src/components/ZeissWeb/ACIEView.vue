@@ -9,7 +9,9 @@
         </el-row>
         <el-row class="sectionDetail">
           <el-col :span="24">
-            <ACDealerApprovalList :acDealerData="acDealerData">
+            <ACDealerApprovalList :allowApproval="isAllowCurrentUserApprove"
+                                  :acDealerData="acDealerData" 
+                                  v-on:acdealerapproval="handleMappingApproval">
             </ACDealerApprovalList>
           </el-col>
         </el-row>
@@ -41,13 +43,20 @@
     name: "ACIEView",
     data() {
       return {
-
+        isAllowCurrentUserApprove: this.allowApproval
       }
     },
-    props: ['ieCompanyData','acDealerData'],
+    props: ['ieCompanyData','acDealerData','allowApproval'],
     components: {IECompanyList,ACDealerApprovalList},
+    watch: {
+      allowApproval: function(newvalue) {
+        this.isAllowCurrentUserApprove = newvalue;
+      }
+    },
     methods: {
-
+      handleMappingApproval: function(value, status) {
+        this.$emit('approve', value, status);
+      }
     }
   }
 </script>

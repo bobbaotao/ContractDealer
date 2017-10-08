@@ -61,7 +61,8 @@
             </el-tab-pane>
             <el-tab-pane label="IE Company & Affiliated Company" name="second" v-if="dealerSummaryInfo.dealerType == '2'">
               <ACIEView v-if="(ieCompanyData != null &&  ieCompanyData.length && ieCompanyData.length > 0) || (acDealerData != null && acDealerData.length && acDealerData.length > 0)"
-                        :ieCompanyData="ieCompanyData" :acDealerData="acDealerData">
+                        :ieCompanyData="ieCompanyData" :acDealerData="acDealerData"
+                        :allowApproval="taskID != ''" v-on:approve="handleMappingApproval">
               </ACIEView>
               <span v-else>
                 改供应商尚未提交关联公司以及进出口公司
@@ -71,8 +72,12 @@
         </el-col>
       </el-row>
       <el-row>
-        <ApprovalView v-bind:ApprovalInfos="approvalInfo" v-bind:taskID="taskID" v-on:ApprovedSuccess="Reload">
-        </ApprovalView>
+        <el-col>
+          <ApprovalView v-bind:ApprovalInfos="approvalInfo" v-bind:taskID="taskID"
+                        v-on:approveTask="ValidateACDealerMapping"
+                        v-on:ApprovedSuccess="Reload">
+          </ApprovalView>
+        </el-col>
       </el-row>
     </el-col>
   </el-row>
@@ -156,6 +161,54 @@
       Reload: function() {
         this.$router.push({name: 'DealerDetail', params: {dealerId: this.dealerId}});
       },
+      ValidateACDealerMapping(requestParam) {
+        if(this.acDealerData && this.acDealerData.length > 0) {
+          for(var key in this.acDealerData) {
+            var item = this.acDealerData[key];
+            if(item.MappingStatus == "1" || item.MappingStatus == "0") {
+              this.$confirm('尚有关联公司关联关系未被审批, 是否继续?', '提示', {
+                            confirmButtonText: '确定',
+                            cancelButtonText: '取消',
+                            type: 'warning'
+                          }).then(() => {
+                            this.ApproveTask(requestParam);
+                          }).catch(() => {
+
+                          });
+              return;
+            }
+          }
+        }
+          this.ApproveTask(requestParam);
+      },
+      ApproveTask: function(requestParam) {
+
+        var requestUrl = defaultData.cdServiceUrl + "/ApproveTask";
+        this.ShowLoadingView();
+
+        this.axios.post(requestUrl,requestParam).then((response) => {
+          this.HideLoadingView();
+          if(response.status == '200' && response.data) {
+              if(response.data.ApproveTaskResult && response.data.ApproveTaskResult.Status == "success") {
+                this.$alert('操作成功！', 'Success', {
+                    confirmButtonText: '关闭',
+                    callback: action => {
+                        //this.$emit('ApprovedSuccess');
+                        this.Reload();
+                    }
+                  });
+              } else {
+                this.$message.error(response.data.ApproveTaskResult.Message);
+              }
+            } else {
+            this.$message.error(response.status);
+          }
+        }).catch((error) => {
+          this.HideLoadingView();
+          this.$message.error(error.message);
+        });
+
+      },
       LoadDealerDetailFromServer: function() {
         var requestUrl = defaultData.cdServiceUrl +  "/LoadContractDealerDetail/" + this.dealerId;
         this.ShowLoadingView();
@@ -235,6 +288,78 @@
         }).catch((error) => {
           this.HideLoadingView();
           this.$message.error(error.message);
+        });
+      },
+
+      handleMappingApproval: function(mappingValue, status) {
+        var requestUrl = defaultData.cdServiceUrl +  "/ApproveDealerMapping"; //"/" + value.MappingId + "/";
+        if(status == "Reject") {
+          this.$confirm('Please input comments', 'Comments', {
+              confirmButtonText: 'Confirm',
+              cancelButtonText: 'Close',
+              showInput: true
+            }).then(({ value }) => {
+              var requestParam = {
+                  taskParams: {
+                    TaskID : mappingValue.MappingId,
+                    TaskStatus : "3",
+                    Comments : value
+                  }
+                };
+                this.ApproveACDealer(requestUrl, requestParam);
+            }).catch(() => {
+
+            });
+
+        } else if (status == "Approve") {
+          var requestParam = {
+              taskParams: {
+              TaskID : value.MappingId,
+              TaskStatus : "2",
+              Comments : ""
+            }
+          };
+          this.ApproveACDealer(requestUrl, requestParam);
+        }
+      },
+      ApproveACDealer: function(requestUrl, requestParam) {
+        this.ShowLoadingView();
+
+        this.axios.post(requestUrl, requestParam).then((response) => {
+          this.HideLoadingView();
+          //TODO
+          if(response.status == "200" && response.data.ApproveDealerMappingResult.Status == "success")
+          {
+            this.$message("Action success!");
+            this.LoadACDealerInfoFromServer();
+          } else if (response.status == "200"){
+            this.$message.error(response.data.ApproveDealerMappingResult.Message);
+          } else {
+            this.$message.error(response.message);
+          }
+        }).catch((error) => {
+          this.HideLoadingView();
+          this.$message.error(error.message);
+        });
+      },
+      LoadACDealerInfoFromServer: function() {
+        var requestUrl = defaultData.cdServiceUrl +  "/LoadACDealerInfo/" + this.dealerId;
+        this.ShowLoadingView();
+
+        this.axios.post(requestUrl).then((response) => {
+          this.HideLoadingView();
+          //TODO
+          if(response.status == "200" && response.data.LoadACDealerInfoResult.Status == "success")
+          {
+            this.acDealerData = response.data.LoadACDealerInfoResult.Data;
+          } else if (response.status == "200") {
+              this.$message.error(response.data.LoadACDealerInfoResult.Message);
+          } else {
+            this.$message.error(response.message);
+          }
+        }).catch((error) => {
+          this.HideLoadingView();
+          this.$message.error(errr.message);
         });
       },
       GetStatus: function(value) {

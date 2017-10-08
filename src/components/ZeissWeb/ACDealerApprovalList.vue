@@ -24,9 +24,14 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="操作" min-width="90">
+        <el-table-column label="操作" min-width="90" v-if="allowApproval">
           <template scope="scope">
-            //todo
+            <el-button size="small" type="primary" :disabled="scope.row.MappingStatus == 2" v-on:click="handleMappingApproval(scope.row, 'Approve')">
+              Approve
+            </el-button>
+            <el-button size="small" type="primary" :disabled="scope.row.MappingStatus == 3"  v-on:click="handleMappingApproval(scope.row, 'Reject')">
+              Reject
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -36,15 +41,23 @@
 
 <script>
   import defaultData from '../defaultData';
+  import { Loading } from 'element-ui';
   export default {
     name: "ACDealerApprovalList",
     data() {
       return {
-
       }
     },
-    props: ['acDealerData'],
+    props: ['acDealerData','allowApproval'],
+    components: { Loading },
     methods: {
+      ShowLoadingView: function() {
+        Loading.service({ fullscreen: true });
+      },
+      HideLoadingView: function() {
+        let curLoadingInstance = Loading.service({ fullscreen: true });
+        curLoadingInstance.close();
+      },
       GetFileUrl: function(fileInfo) {
         return defaultData.zeissFileBaseUrl + '?method=load&fileid=' + fileInfo.FileID;
       },
@@ -56,6 +69,8 @@
             return "审核中";
           case "2":
             return "审核通过";
+          case "3":
+            return "审核不通过";
           default:
             return "未提交审核";
         }
@@ -73,6 +88,9 @@
           default:
             return "未完成注册";
         }
+      },
+      handleMappingApproval: function(value, status) {
+        this.$emit('acdealerapproval', value, status);
       },
       handleDealerClick: function(value) {
         if(value) {
