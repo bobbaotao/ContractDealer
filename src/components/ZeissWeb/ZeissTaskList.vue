@@ -15,6 +15,11 @@
               <a v-on:click="GotoDealerDetail(scope.row)">{{scope.row.DealerName}}</a>
             </template>
           </el-table-column>
+          <el-table-column label="Task Type" prop="TaskType">
+              <template scope="scope">
+                {{scope.row.TaskType == "DealerInfoTask" ? "自我声明表": "经销商申请表"}}
+              </template>
+          </el-table-column>
           <el-table-column label="Approver" prop="Approver">
           </el-table-column>
           <el-table-column label="Status" prop="TaskStatus">
@@ -96,7 +101,12 @@
         return new moment(value).format(defaultData.dateFormat);
       },
       GotoDealerDetail: function(task) {
-        this.$router.push({name: 'TaskDetail', params: {dealerId: task.DealerID, taskId: task.TaskID}});
+        if(task.TaskType == "DealerInfoTask")
+        {
+          this.$router.push({name: 'TaskDetail', params: {dealerId: task.DealerID, taskId: task.TaskID}});
+        } else {
+          this.$router.push({name: 'DealerApplicationTask', params: {dealerId: task.DealerID, taskId: task.TaskID}});
+        }
       }
     }
   }

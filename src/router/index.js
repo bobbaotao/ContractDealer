@@ -11,7 +11,6 @@ import ZeissTask from '@/components/ZeissWeb/ZeissTask'
 import DealerDetail from '@/components/ZeissWeb/DealerDetail'
 import ACDealerPage from '@/components/ZeissWeb/ACDealerList'
 import TaskDetail from '@/components/ZeissWeb/TaskDetail'
-import DealerApplication from '@/components/ZeissWeb/DealerApplicationForm'
 import DealerApplicationPage from '@/components/ZeissWeb/DealerApplicationPage'
 
 Vue.use(Router)
@@ -64,12 +63,6 @@ export default new Router({
       path: '/ACDealerPage',
       name: 'ACDealerPage',
       component: ACDealerPage
-    }
-    ,
-    {
-      path: '/DealerApplication',
-      name: 'DealerApplication',
-      component: DealerApplication
     }
     ,
     {

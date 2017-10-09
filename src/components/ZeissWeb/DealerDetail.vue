@@ -45,6 +45,9 @@
                   :disabled="!approvalInfo.IsAllowCurrentUserStartSIWF  || dealerSummaryInfo.dealerStatus == '1'">
             退回供应商信息表
           </el-button>
+          <el-button type="primary" size="small" v-on:click="NavigateToApplication">
+            经销商申请表
+          </el-button>
         </el-col>
       </el-row>
       <el-row>
@@ -335,6 +338,9 @@
           this.HideLoadingView();
           this.$message.error(errr.message);
         });
+      },
+      NavigateToApplication: function() {
+          this.$router.push({name: 'DealerApplicationPage', params: {dealerId: this.dealerId}});
       },
       GetStatus: function(value) {
         switch (value) {

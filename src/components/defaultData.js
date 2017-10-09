@@ -223,5 +223,42 @@ module.exports = {
       }
     }
   }
+  ,
+  buildDealerApplicationToServer: function(data) {
+    var resquestData = {
+      dealerApplication: {
+        Applicant: data.Applicant,
+        ApplicantAccount: data.ApplicantAccount,
+        Area_Industry: data.Area_Industry,
+        Assessment_Probation: data.Assessment_Probation,
+        Authorization_Period: data.Authorization_Period,
+        BU: data.BU,
+        Created: data.Created,
+        CreatedBy: data.CreatedBy,
+        DealerName_CN: data.DealerName_CN,
+        DealerName_EN: data.DealerName_EN,
+        Dealer_Activity: data.Dealer_Activity,
+        Dealer_BL_History: data.Dealer_BL_History,
+        Dealer_BR: data.Dealer_BR,
+        Dealer_EA: data.Dealer_EA,
+        Dealer_EM_BR: data.Dealer_EM_BR,
+        Dealer_Id: data.Dealer_Id,
+        Dealer_OR: data.Dealer_OR,
+        Dealer_QR: data.Dealer_QR,
+        Dealer_Re: data.Dealer_Re,
+        IsCompleteSDForm: data.IsCompleteSDForm,
+        Modified: data.Modified,
+        ModifiedBy: data.ModifiedBy,
+        NatureOfContractDealer: data.NatureOfContractDealer,
+        Performance_Target: data.Performance_Target,
+        Period: data.Period,
+        Product: data.Product,
+        ReasonOfApplication: data.ReasonOfApplication,
+        Status: data.Status,
+        id: data.id
+      }
+    };
 
+    return resquestData;
+  }
 }
