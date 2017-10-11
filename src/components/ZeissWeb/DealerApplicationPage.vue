@@ -139,7 +139,7 @@
               };
               this.IsAllowCurrentUserSubmit = responseData.ApprovalInfos.IsAllowCurrentUserSubmit && responseData.ApplicationInfo
                                               && responseData.ApplicationInfo.Status && responseData.ApplicationInfo.Status != '2'
-                                              && responseData.ApplicationInfo != '3' && responseData.ApplicationInfo.Status != '4';
+                                              && responseData.ApplicationInfo != '3';
             } else if(response.data && response.data.LoadDealerApplicationDetailResult)
             {
                 this.$message.error(response.data.LoadDealerApplicationDetailResult.Message);

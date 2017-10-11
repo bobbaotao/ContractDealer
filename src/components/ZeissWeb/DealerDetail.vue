@@ -49,6 +49,11 @@
             经销商申请表
           </el-button>
         </el-col>
+        <el-col :span="8" :offset="4">
+          <FileManager :FileName="legalFileName" :fileID="legalFileID" :dealerId="dealerId"
+                        :AllowUpload="isLegalUser" v-on:ReloadDealerInfo="ResetFileInfo">
+          </FileManager>
+        </el-col>
       </el-row>
       <el-row>
         <el-col>
@@ -89,6 +94,7 @@
   import DealerInfo from './DealerInfo';
   import ACIEView from './ACIEView';
   import ApprovalView from './ApprovalView';
+  import FileManager from './FileManager';
   var array = require('array');
 
   export default {
@@ -103,6 +109,11 @@
         dealerInfoDocData: null,
         acDealerData: null,
         ieCompanyData: null,
+        legalFileName: '',
+        legalFileID: '',
+        legalFileList: null,
+        isLegalUser: false,
+        fileSvcUrl: defaultData.zeissFileBaseUrl,
         approvalInfo: {
           CurTasks: null,
           IsAllowCurrentUserApprove: true,
@@ -124,7 +135,7 @@
         }
       }
     },
-    components: {TopNav, DealerInfo, ACIEView, ApprovalView},
+    components: {TopNav, DealerInfo, ACIEView, ApprovalView, FileManager},
     watch: {
     '$route' (to, from) {
       // 对路由变化作出响应...
@@ -158,6 +169,10 @@
       Reload: function() {
         this.$router.push({name: 'DealerDetail', params: {dealerId: this.dealerId}});
       },
+      ResetFileInfo: function(fileID, fileName) {
+        this.legalFileID = fileID;
+        this.legalFileName = fileName;
+      },
       LoadDealerDetailFromServer: function() {
         var requestUrl = defaultData.cdServiceUrl +  "/LoadContractDealerDetail/" + this.dealerId;
         this.ShowLoadingView();
@@ -184,6 +199,13 @@
                   ieCompanyArr.push(defaultData.getZeissIEItemFromServerData(resCompanyInfo));
                 }
                 this.ieCompanyData = ieCompanyArr.toArray();
+              }
+              this.isLegalUser = responseData.IsLegalUser;
+              //set legal file
+              if(responseData.LegalFiles && responseData.LegalFiles.length > 0)
+              {
+                this.legalFileName = responseData.LegalFiles[0].FileName;
+                this.legalFileID = responseData.LegalFiles[0].FileID;
               }
             } else {
               this.$message.error(response.data.GetContractDetailDetailResult.Message);

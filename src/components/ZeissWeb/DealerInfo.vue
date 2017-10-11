@@ -171,7 +171,7 @@
                 《医疗器械经营许可证》涵盖的经营范围
               </el-col>
               <el-col :span="5" :offset="1">
-                {{dealerInfoDocData.qualificationText}}
+                <span v-html="dealerInfoDocData.qualificationText"></span>
               </el-col>
             </el-row>
           </el-col>

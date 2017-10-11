@@ -46,6 +46,11 @@
             退回供应商信息表
           </el-button>
         </el-col>
+        <el-col :span="8"  :offset="4">
+          <FileManager :FileName="legalFileName" :fileID="legalFileID" :dealerId="dealerId"
+                        :AllowUpload="isLegalUser" v-on:ReloadDealerInfo="ResetFileInfo">
+          </FileManager>
+        </el-col>
       </el-row>
       <el-row>
         <el-col>
@@ -104,6 +109,10 @@
         dealerInfoDocData: null,
         acDealerData: null,
         ieCompanyData: null,
+        legalFileName: '',
+        legalFileID: '',
+        legalFileList: null,
+        isLegalUser: false,
         approvalInfo: {
           CurTasks: null,
           IsAllowCurrentUserApprove: false,
@@ -209,6 +218,10 @@
         });
 
       },
+      ResetFileInfo: function(fileID, fileName) {
+        this.legalFileID = fileID;
+        this.legalFileName = fileName;
+      },
       LoadDealerDetailFromServer: function() {
         var requestUrl = defaultData.cdServiceUrl +  "/LoadContractDealerDetail/" + this.dealerId;
         this.ShowLoadingView();
@@ -235,6 +248,14 @@
                   ieCompanyArr.push(defaultData.getZeissIEItemFromServerData(resCompanyInfo));
                 }
                 this.ieCompanyData = ieCompanyArr.toArray();
+              }
+
+              this.isLegalUser = responseData.IsLegalUser;
+              //set legal file
+              if(responseData.LegalFiles && responseData.LegalFiles.length > 0)
+              {
+                this.legalFileName = responseData.LegalFiles[0].FileName;
+                this.legalFileID = responseData.LegalFiles[0].FileID;
               }
             } else {
               this.$message.error(response.data.GetContractDetailDetailResult.Message);
