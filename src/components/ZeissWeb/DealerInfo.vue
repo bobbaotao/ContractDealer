@@ -1081,6 +1081,22 @@
         <span v-else>暂未上传</span>
       </el-col>
     </el-row>
+    <el-row class="LargeRow">
+      <el-col :span="6">
+        Anti-Corrupt Document<br />
+        反腐败声明
+      </el-col>
+      <el-col :span="12">
+        <div  v-if="dealerInfoDocData.anti_bribery_name">
+          <a target="blank"  class="zeisslink"
+            :href="fileBaseUrl + '?method=loadDealerDoc&dealerid=' + dealerInfoData.dealer_id + '&filetype=anti_bribery'"
+            download>
+            {{dealerInfoDocData.anti_bribery_name}}
+          </a>
+        </div>
+        <span v-else>暂未上传</span>
+      </el-col>
+    </el-row>
   </div>
 </template>
 

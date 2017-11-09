@@ -4,13 +4,13 @@
       <el-col :span="24">
         <el-row class="sectionTitle">
           <el-col :span="24">
-            <span style="padding-left: 5px;">Affiliated Company Info</span>
+            <span style="padding-left: 5px;">Related Company Info</span>
           </el-col>
         </el-row>
         <el-row class="sectionDetail">
           <el-col :span="24">
             <ACDealerApprovalList :allowApproval="isAllowCurrentUserApprove"
-                                  :acDealerData="acDealerData" 
+                                  :acDealerData="acDealerData"
                                   v-on:acdealerapproval="handleMappingApproval">
             </ACDealerApprovalList>
           </el-col>

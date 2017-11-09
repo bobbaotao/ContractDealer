@@ -1,5 +1,20 @@
 <template>
   <el-row class="mainDiv">
+    <el-dialog
+          title="Dealer Authorization Certificate"
+          :visible.sync="dialogVisible"
+          size="large">
+          <DealerAuthCertMgr v-bind:dealerId="dealerId" v-on:close="dialogVisible = false"></DealerAuthCertMgr>
+    </el-dialog>
+    <el-dialog v-if="IsHaveRelatedDealer"
+          title="Dealer Relationship"
+          :visible.sync="relatedDialogVisible"
+          size="large">
+          <ACDealerApprovalList :allowApproval="isLegalUser"
+                                :acDealerData="BeRelatedDealer"
+                                v-on:acdealerapproval="handleMappingApproval">
+          </ACDealerApprovalList>
+    </el-dialog>
     <el-col :span="22" :offset="1">
       <el-row class="topNav">
         <el-col>
@@ -22,7 +37,7 @@
         </el-col>
       </el-row>
       <el-row style="padding-top:5px; padding-bottom:5px;">
-        <el-col :span="12" style="text-align:left">
+        <el-col :span="15" style="text-align:left">
           <!-- <el-button  :disabled = " !approvalInfo.IsAllowCurrentUserStartSIWF"
                       v-on:click="StartSIWF" type="primary" size="small">
             启动自我声明表审批
@@ -48,8 +63,19 @@
           <el-button type="primary" size="small" v-on:click="NavigateToApplication">
             经销商申请表
           </el-button>
+          <a :href="'/_layouts/15/Zeiss.SpotDealer/NewApprovalForm.aspx?List=a1b6eb24-240e-43e3-b7c1-efd2668756c0&dealerguid=' + dealerId" _target="self">
+            <el-button type="primary" size="small">
+              发起项目审批流程
+            </el-button>
+          </a>
+          <el-button type="primary" size="small" v-on:click="dialogVisible = true">
+            管理经销商资格证
+          </el-button>
+          <el-button type="primary" size="small" v-if="IsHaveRelatedDealer" v-on:click="relatedDialogVisible = true">
+            审核关联关系
+          </el-button>
         </el-col>
-        <el-col :span="8" :offset="4">
+        <el-col :span="8" :offset="1">
           <FileManager :FileName="legalFileName" :fileID="legalFileID" :dealerId="dealerId"
                         :AllowUpload="isLegalUser" v-on:ReloadDealerInfo="ResetFileInfo">
           </FileManager>
@@ -95,6 +121,8 @@
   import ACIEView from './ACIEView';
   import ApprovalView from './ApprovalView';
   import FileManager from './FileManager';
+  import DealerAuthCertMgr from './DealerAuthCertMgr';
+  import ACDealerApprovalList from './ACDealerApprovalList';
   var array = require('array');
 
   export default {
@@ -114,6 +142,10 @@
         legalFileList: null,
         isLegalUser: false,
         fileSvcUrl: defaultData.zeissFileBaseUrl,
+        dialogVisible: false,
+        relatedDialogVisible: false,
+        IsHaveRelatedDealer: false,
+        BeRelatedDealer: null,
         approvalInfo: {
           CurTasks: null,
           IsAllowCurrentUserApprove: true,
@@ -135,7 +167,7 @@
         }
       }
     },
-    components: {TopNav, DealerInfo, ACIEView, ApprovalView, FileManager},
+    components: {TopNav, DealerInfo, ACIEView, ApprovalView, FileManager, DealerAuthCertMgr, ACDealerApprovalList},
     watch: {
     '$route' (to, from) {
       // 对路由变化作出响应...
@@ -207,6 +239,8 @@
                 this.legalFileName = responseData.LegalFiles[0].FileName;
                 this.legalFileID = responseData.LegalFiles[0].FileID;
               }
+              this.IsHaveRelatedDealer = responseData.IsHaveRelatedDealer;
+              this.BeRelatedDealer = responseData.BeRelatedDealer;
             } else {
               this.$message.error(response.data.GetContractDetailDetailResult.Message);
             }
@@ -341,6 +375,26 @@
           this.$message.error(error.message);
         });
       },
+      LoadBeRelatedDealerFromServer: function() {
+        var requestUrl = defaultData.cdServiceUrl +  "/LoadBeRelatedDealer/" + this.dealerId;
+        this.ShowLoadingView();
+
+        this.axios.post(requestUrl).then((response) => {
+          this.HideLoadingView();
+          //TODO
+          if(response.status == "200" && response.data.LoadBeRelatedDealerResult.Status == "success")
+          {
+            this.BeRelatedDealer = response.data.LoadBeRelatedDealerResult.Data;
+          } else if (response.status == "200") {
+              this.$message.error(response.data.LoadBeRelatedDealerResult.Message);
+          } else {
+            this.$message.error(response.message);
+          }
+        }).catch((error) => {
+          this.HideLoadingView();
+          this.$message.error(errr.message);
+        });
+      },
       LoadACDealerInfoFromServer: function() {
         var requestUrl = defaultData.cdServiceUrl +  "/LoadACDealerInfo/" + this.dealerId;
         this.ShowLoadingView();
@@ -351,6 +405,8 @@
           if(response.status == "200" && response.data.LoadACDealerInfoResult.Status == "success")
           {
             this.acDealerData = response.data.LoadACDealerInfoResult.Data;
+
+            this.LoadBeRelatedDealerFromServer();
           } else if (response.status == "200") {
               this.$message.error(response.data.LoadACDealerInfoResult.Message);
           } else {
@@ -377,6 +433,9 @@
           default:
             return "未完成注册";
         }
+      },
+      NavigateToNewApproval: function() {
+        this.$router.push({path: "/_layouts/15/Zeiss.SpotDealer/NewApprovalForm.aspx?dealerid=" + this.dealerid});
       },
       GetMappingStatus: function(value) {
         switch (value) {

@@ -95,6 +95,8 @@
   import DealerInfo from './DealerInfo';
   import ACIEView from './ACIEView';
   import ApprovalView from './ApprovalView';
+  import FileManager from './FileManager';
+
   var array = require('array');
 
   export default {
@@ -134,7 +136,7 @@
         }
       }
     },
-    components: {TopNav, DealerInfo, ACIEView, ApprovalView},
+    components: {TopNav, DealerInfo, ACIEView, ApprovalView,FileManager},
     watch: {
     '$route' (to, from) {
       // 对路由变化作出响应...

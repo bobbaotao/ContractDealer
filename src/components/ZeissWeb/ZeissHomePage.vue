@@ -1,9 +1,23 @@
 <template>
   <el-row>
+  <el-dialog
+        title="New Contract Dealer"
+        :visible.sync="dialogVisible"
+        size="large">
+        <DealerInvite v-on:close="dialogVisible = false"
+                      v-on:inviteDealerSuccess="inviteDealerSuccess"></DealerInvite>
+  </el-dialog>
     <el-col :span="22" :offset="1">
       <el-row class="topNav">
         <TopNav v-bind:activeIndex="navKey">
         </TopNav>
+      </el-row>
+      <el-row class="smallRow">
+        <el-col style="text-align:left">
+          <el-button size="small" type="primary" v-on:click="dialogVisible = true">
+            Invite Dealer
+          </el-button>
+        </el-col>
       </el-row>
       <el-row>
         <el-tabs v-model="activeName" type="card">
@@ -31,6 +45,7 @@
   import DealerList from './DealerList';
   import TopNav from './TopNav';
   var array = require('array');
+  import DealerInvite from './DealerInvite';
 
   export default {
     name: "ZeissHomePage",
@@ -42,10 +57,11 @@
         inProcessCDData: null,
         approvedCDData: null,
         activeName: 'first',
-        navKey: 'MyCD'
+        navKey: 'MyCD',
+        dialogVisible: false
       }
     },
-    components: { DealerList, TopNav},
+    components: { DealerList, TopNav, DealerInvite},
     created: function() {
       this.LoadContractDealersFromServer();
     },
@@ -56,6 +72,10 @@
       HideLoadingView: function() {
         let curLoadingInstance = Loading.service({ fullscreen: true });
         curLoadingInstance.close();
+      },
+      inviteDealerSuccess: function() {
+        this.dialogVisible = false;
+        this.LoadContractDealersFromServer();
       },
       LoadContractDealersFromServer: function() {
         var requestUrl = this.cdServiceUrl + "/LoadAllContractDealerByCurrentUser/2";
@@ -78,7 +98,7 @@
                   || item.ieacStatus == "0" || item.ieacStatus == "1")
                   {
                     nsArr.push(item);
-                  } else if (item.dealerStatus == "2" && item.ieacStatus == "2") {
+                  } else if (item.dealerStatus == "2") {
                     ipArr.push(item);
                   } else {
                     adArr.push(item);
@@ -104,4 +124,9 @@
 .topNav {
 
 }
+.smallRow {
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
 </style>

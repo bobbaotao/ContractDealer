@@ -10,29 +10,29 @@
     <el-row>
       <el-col :span="24">
         <el-table :data="resultData" border stripe style="width:100%;">
-          <el-table-column label="Company Name" prop="DealerName">
+          <el-table-column label="Company Name" prop="DealerName" sortable>
             <template scope="scope">
               <a v-on:click="GotoDealerDetail(scope.row)">{{scope.row.DealerName}}</a>
             </template>
           </el-table-column>
-          <el-table-column label="Task Type" prop="TaskType">
+          <el-table-column label="Task Type" prop="TaskType" sortable>
               <template scope="scope">
                 {{scope.row.TaskType == "DealerInfoTask" ? "自我声明表": "经销商申请表"}}
               </template>
           </el-table-column>
-          <el-table-column label="Approver" prop="Approver">
+          <el-table-column label="Approver" prop="Approver" sortable>
           </el-table-column>
-          <el-table-column label="Status" prop="TaskStatus">
+          <el-table-column label="Status" prop="TaskStatus" sortable>
             <template scope="scope">
               {{GetStatus(scope.row)}}
             </template>
           </el-table-column>
-          <el-table-column label="Created" prop="Created">
+          <el-table-column label="Created" prop="Created" sortable>
             <template scope="scope">
               {{GetDate(scope.row.Created)}}
             </template>
           </el-table-column>
-          <el-table-column label="Modified" prop="Modified">
+          <el-table-column label="Modified" prop="Modified" sortable>
             <template scope="scope">
               {{GetDate(scope.row.Modified)}}
             </template>
@@ -75,8 +75,8 @@
           var filterResult = new array();
           for (var key in this.initData) {
             var item = this.initData[key];
-            if((item.DealerName && item.DealerName.indexOf(this.filterKey) != -1) ||
-            (item.Approver && item.Approver.indexOf(this.filterKey) != -1)) {
+            if((item.DealerName && item.DealerName.toUpperCase().indexOf(this.filterKey.toUpperCase()) != -1) ||
+            (item.Approver && item.Approver.toUpperCase().indexOf(this.filterKey.toUpperCase()) != -1)) {
               filterResult.push(item);
             }
           }

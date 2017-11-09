@@ -113,7 +113,7 @@ module.exports = {
 
       TRCDocID: data.trcfile.fileId,
       TRCExpireDate: trcDate,
-      TRDocTitle: data.trcfile.name,
+      TRCDocTitle: data.trcfile.name,
 
       OCDocID: data.ocfile.fileId,
       OCExpireDate: ocDate,
@@ -145,7 +145,7 @@ module.exports = {
       // Tax registration certificate
       trcDate: data.TRCExpireDate == "" ? null : moment(data.TRCExpireDate, this.dateFormat).toDate(),
       trcfile:{
-        name: data.TRDocTitle,
+        name: data.TRCDocTitle,
         url: this.fileBaseUrl + "?method=load&fileid=" + data.TRCDocID,
         status: '',
         fileId: data.TRCDocID
@@ -192,7 +192,7 @@ module.exports = {
       // Tax registration certificate
       trcDate: data.TRCExpireDate == "" ? null : moment(data.TRCExpireDate, this.dateFormat).toDate(),
       trcfile:{
-        name: data.TRDocTitle,
+        name: data.TRCDocTitle,
         url: this.zeissFileBaseUrl + "?method=load&fileid=" + data.TRCDocID,
         status: '',
         fileId: data.TRCDocID

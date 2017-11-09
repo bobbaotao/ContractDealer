@@ -16,6 +16,7 @@
     "array": "^0.4.3",
     "axios": "^0.16.2",
     "element-ui": "^1.4.3",
+    "email-validator": "^1.1.1",
     "es6-promise": "^4.1.1",
     "moment": "^2.18.1",
     "vue": "^2.3.3",

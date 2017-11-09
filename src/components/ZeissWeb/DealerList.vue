@@ -8,42 +8,74 @@
       </el-col>
     </el-row>
       <el-table :data="resultData" border stripe style="width:100%;">
-      <el-table-column label="Company Name" prop="companyName"  min-width="110">
+      <el-table-column label="Company Name" prop="companyName" sortable  min-width="110">
         <template scope="scope">
           <a v-on:click="GotoDealerDetail(scope.row.dealerID)">{{scope.row.companyName}}</a>
         </template>
       </el-table-column>
-      <el-table-column label="Dealer Status" prop="dealerStatus" min-width="110">
+      <el-table-column label="Dealer Status" prop="dealerStatus" sortable min-width="110">
         <template scope="scope">
           {{GetStatus(scope.row)}}
         </template>
       </el-table-column>
-      <el-table-column label="IEAC Status" prop="ieacStatus" v-if="dealerType == '2'" min-width="110">
+      <el-table-column label="IEAC Status" prop="ieacStatus" sortable v-if="dealerType == '9'" min-width="110">
+        <!-- no used -->
         <template scope="scope">
           {{GetMappingStatus(scope.row)}}
         </template>
       </el-table-column>
-      <el-table-column label="Division" prop="division"  min-width="110">
+      <el-table-column label="Related Status" prop="waitApprovedACDealer" sortable v-if="dealerType == '2'" min-width="110">
+        <template scope="scope">
+          <el-tooltip placement="left">
+            <div slot="content">
+              {{scope.row.TotalACDealer}} Total related dealer<br />
+              {{scope.row.ApprovedACDealer}} relationship got approved<br />
+              {{scope.row.waitApprovedACDealer}} relationship waiting for approval<br />
+              {{scope.row.dealerInfoNotApprovedACDealer}} dealer info waiting for approval<br />
+              {{scope.row.notSubmittedACDealer}} dealer info not submit
+            </div>
+            <div>
+              {{scope.row.TotalACDealer}} | {{scope.row.ApprovedACDealer}} | {{scope.row.waitApprovedACDealer}} | {{scope.row.dealerInfoNotApprovedACDealer}} | {{scope.row.notSubmittedACDealer}}
+            </div>
+          </el-tooltip>
+        </template>
+      </el-table-column>
+      <el-table-column label="Be Related Status" prop="beMappedDealerNum" sortable
+      v-if="dealerType != '2'" min-width="130">
+        <template scope="scope">
+          <el-tooltip placement="left">
+            <div slot="content">
+              {{scope.row.beMappedDealerNum}} Total related dealer<br />
+              {{scope.row.approvedMapDealerNum}} relationship got approved<br />
+              {{scope.row.waitApprovalMapDealerNum}} relationship waiting for approval
+            </div>
+            <div>
+              {{scope.row.beMappedDealerNum}} | {{scope.row.approvedMapDealerNum}} | {{scope.row.waitApprovalMapDealerNum}}
+            </div>
+          </el-tooltip>
+        </template>
+      </el-table-column>
+      <el-table-column label="Division" prop="division" sortable min-width="110">
         <template scope="scope">
           {{scope.row.division}}
         </template>
       </el-table-column>
-      <el-table-column label="Sales Region" prop="salesRegion"  min-width="110">
+      <el-table-column label="Sales Region" prop="salesRegion" sortable  min-width="110">
         <template scope="scope">
           {{scope.row.salesRegion}}
         </template>
       </el-table-column>
-      <el-table-column label="Sales" prop="sales"  min-width="110">
+      <el-table-column label="Sales" prop="sales" sortable  min-width="110">
         <template scope="scope">
             {{scope.row.sales}}
         </template>
       </el-table-column>
-      <el-table-column label="Coordinator" prop="coordinator"  min-width="110">
+      <el-table-column label="Coordinator" prop="coordinator" sortable  min-width="110">
         <template scope="scope">
             {{scope.row.coordinator}}
         </template>
       </el-table-column>
-      <el-table-column label="Created"  min-width="110">
+      <el-table-column label="Created" prop="created" sortable  min-width="90">
         <template scope="scope">
             {{GetDate(scope.row.created)}}
         </template>
@@ -112,11 +144,11 @@
           var filterResult = new array();
           for (var key in this.initData) {
             var item = this.initData[key];
-            if((item.companyName && item.companyName.indexOf(this.filterKey) != -1) ||
-            (item.coordinator && item.coordinator.indexOf(this.filterKey) != -1) ||
-            (item.sales && item.sales.indexOf(this.filterKey) != -1) ||
-            (item.division && item.division.indexOf(this.filterKey) != -1) ||
-            (item.salesRegion && item.salesRegion.indexOf(this.filterKey) != -1)) {
+            if((item.companyName && item.companyName.toUpperCase().indexOf(this.filterKey.toUpperCase()) != -1) ||
+            (item.coordinator && item.coordinator.toUpperCase().indexOf(this.filterKey.toUpperCase()) != -1) ||
+            (item.sales && item.sales.toUpperCase().indexOf(this.filterKey.toUpperCase()) != -1) ||
+            (item.division && item.division.toUpperCase().indexOf(this.filterKey.toUpperCase()) != -1) ||
+            (item.salesRegion && item.salesRegion.toUpperCase().indexOf(this.filterKey.toUpperCase()) != -1)) {
               filterResult.push(item);
             }
           }

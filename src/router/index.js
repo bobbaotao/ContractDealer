@@ -12,6 +12,8 @@ import DealerDetail from '@/components/ZeissWeb/DealerDetail'
 import ACDealerPage from '@/components/ZeissWeb/ACDealerList'
 import TaskDetail from '@/components/ZeissWeb/TaskDetail'
 import DealerApplicationPage from '@/components/ZeissWeb/DealerApplicationPage'
+import ZeissPeoplePicker from '@/components/ZeissWeb/ZeissPeoplePicker'
+import DealerInvite from '@/components/ZeissWeb/DealerInvite'
 
 Vue.use(Router)
 
@@ -75,6 +77,18 @@ export default new Router({
       path: '/DealerApplicationTask/:dealerId/:taskId',
       name: 'DealerApplicationTask',
       component: DealerApplicationPage
+    }
+    ,
+    {
+      path: '/ZeissPeoplePicker',
+      name: 'ZeissPeoplePicker',
+      component: ZeissPeoplePicker
+    }
+    ,
+    {
+      path: '/DealerInvite',
+      name: 'DealerInvite',
+      component: DealerInvite
     }
     // ,
     // {
