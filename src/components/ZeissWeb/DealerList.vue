@@ -40,8 +40,8 @@
           </el-tooltip>
         </template>
       </el-table-column>
-      <el-table-column label="Be Related Status" prop="beMappedDealerNum" sortable
-      v-if="dealerType != '2'" min-width="130">
+      <el-table-column label="Related Status" prop="beMappedDealerNum" sortable
+      v-if="dealerType != '2'" min-width="110">
         <template scope="scope">
           <el-tooltip placement="left">
             <div slot="content">

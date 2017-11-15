@@ -63,11 +63,11 @@
           <el-button type="primary" size="small" v-on:click="NavigateToApplication">
             经销商申请表
           </el-button>
-          <a :href="'/_layouts/15/Zeiss.SpotDealer/NewApprovalForm.aspx?List=a1b6eb24-240e-43e3-b7c1-efd2668756c0&dealerguid=' + dealerId" _target="self">
+          <!-- <a :href="'/_layouts/15/Zeiss.SpotDealer/NewApprovalForm.aspx?List=a1b6eb24-240e-43e3-b7c1-efd2668756c0&dealerguid=' + dealerId" _target="self">
             <el-button type="primary" size="small">
               发起项目审批流程
             </el-button>
-          </a>
+          </a> -->
           <el-button type="primary" size="small" v-on:click="dialogVisible = true">
             管理经销商资格证
           </el-button>
@@ -95,7 +95,11 @@
             </el-tab-pane>
             <el-tab-pane label="IE Company & Affiliated Company" name="second" v-if="dealerSummaryInfo.dealerType == '2'">
               <ACIEView v-if="(ieCompanyData != null &&  ieCompanyData.length && ieCompanyData.length > 0) || (acDealerData != null && acDealerData.length && acDealerData.length > 0)"
-                        :ieCompanyData="ieCompanyData" :acDealerData="acDealerData" :allowApproval="true" v-on:approve="handleMappingApproval">
+                        :ieCompanyData="ieCompanyData" :acDealerData="acDealerData"
+                        :allowApproval="true" v-on:approve="handleMappingApproval"
+                        v-on:saveIEQ="saveIEQ" v-on:returnIEAC="ReturnIEAC"
+                        :ieacStatus = "dealerSummaryInfo.ieacStatus"
+                        :isAllowEditQu="isAllowEditQu" :qualificationList="qualificationList">
               </ACIEView>
               <span v-else>
                 该供应商尚未提交关联公司以及进出口公司
@@ -146,6 +150,8 @@
         relatedDialogVisible: false,
         IsHaveRelatedDealer: false,
         BeRelatedDealer: null,
+        qualificationList: null,
+        isAllowEditQu: false,
         approvalInfo: {
           CurTasks: null,
           IsAllowCurrentUserApprove: true,
@@ -218,9 +224,10 @@
               this.dealerInfoDocData = responseData.DealerFileInfo;
               this.approvalInfo = responseData.ApprovalInfos;
               this.acDealerData = responseData.ACDealers;
+              this.qualificationList = responseData.QualificationList;
               if(responseData.SummaryInfo != null) {
                this.dealerSummaryInfo =  responseData.SummaryInfo;
-             }
+              }
               //this.ieCompanyData = responseData.IECompanys;
               this.ieCompanyData = [];
               if(responseData.IECompanys && responseData.IECompanys.length && responseData.IECompanys.length > 0)
@@ -241,6 +248,14 @@
               }
               this.IsHaveRelatedDealer = responseData.IsHaveRelatedDealer;
               this.BeRelatedDealer = responseData.BeRelatedDealer;
+              if(responseData.ApprovalInfos.currentAccount && responseData.ApprovalInfos.currentAccount != ""
+                && responseData.SummaryInfo.coordinatorAccount &&  responseData.SummaryInfo.coordinatorAccount != ""
+                && responseData.ApprovalInfos.currentAccount.toUpperCase() == responseData.SummaryInfo.coordinatorAccount.toUpperCase() ) {
+                  //current user is coordinator, then allowed edit IE qualificationList
+                  this.isAllowEditQu = true;
+                } else {
+                  this.isAllowEditQu = false;
+                }
             } else {
               this.$message.error(response.data.GetContractDetailDetailResult.Message);
             }
@@ -319,6 +334,53 @@
                 this.$message.error(response.data.ValidateACDealerInfoResult.Message);
               }
             }
+        }).catch((error) => {
+          this.HideLoadingView();
+          this.$message.error(error.message);
+        });
+      },
+      saveIEQ: function(value) {
+        var requestUrl = defaultData.cdServiceUrl +  "/SetIEQualification";
+        var requestParam = {
+          ieqParam: {
+            DealerID: this.dealerId,
+            IECompanyInfos: JSON.parse(JSON.stringify(value))
+          }
+        };
+        this.ShowLoadingView();
+
+        this.axios.post(requestUrl, requestParam).then((response) => {
+          this.HideLoadingView();
+          if(response.data && response.data.SetIEQualificationResult
+            && response.data.SetIEQualificationResult.Status == "success")
+          {
+            this.$message("Action Success!");
+          } else if(response.data && response.data.SetIEQualificationResult){
+            this.$message.error(response.data.SetIEQualificationResult.Message);
+          } else {
+            this.$message.error(response.message);
+          }
+        }).catch((error) => {
+          this.HideLoadingView();
+          this.$message.error(error.message);
+        });
+      },
+      ReturnIEAC: function() {
+        var requestUrl = defaultData.cdServiceUrl +  "/ReturnIEAndRE/" + this.dealerId;
+        this.ShowLoadingView();
+
+        this.axios.post(requestUrl).then((response) => {
+          this.HideLoadingView();
+          if(response.data && response.data.ReturnIEAndREResult) {
+            if(response.data.ReturnIEAndREResult.Status == "success") {
+              this.$message("Action Success!");
+              this.dealerSummaryInfo.ieacStatus = 1;
+            } else {
+              this.$message.error(response.data.ReturnIEAndREResult.Message);
+            }
+          } else {
+            this.$message.error("something error!");
+          }
         }).catch((error) => {
           this.HideLoadingView();
           this.$message.error(error.message);

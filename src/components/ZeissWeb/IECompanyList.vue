@@ -176,7 +176,14 @@
 
               </el-col>
             </el-row>
-
+        </el-col>
+      </el-row>
+      <el-row class="middleRow">
+        <el-col :span="22" :offset="1">
+          <QualificationGroup ref="qGroup" :initQList="qualificationList"
+                              :isInEdit="isInEdit" :IEData="item"
+                              :initQData="item.Qualification_Code_List">
+          </QualificationGroup>
         </el-col>
       </el-row>
       <el-row :gutter="5">
@@ -188,6 +195,8 @@
 </template>
 
 <script>
+  import QualificationGroup from './QualificationGroup';
+  var array = require('array');
 
   export default {
     name: 'IECompanyList',
@@ -195,9 +204,18 @@
       return {
       }
     },
-    props: ['ieCompanyData'],
+    components: { QualificationGroup },
+    props: ['ieCompanyData','qualificationList', 'isInEdit'],
     methods: {
-
+      loadSavedData: function() {
+        var ieDataArr = new array();
+        for (var item in this.$refs.qGroup) {
+          var value = this.$refs.qGroup[item].loadSelectedQualification();
+          ieDataArr.push(value);
+          console.dir(value);
+        }
+        return ieDataArr.toArray();
+      }
     }
   }
 </script>

@@ -10,6 +10,7 @@ module.exports = {
     // get an new IECompany
     return {
       companyInfoId: 0,
+      Qualification_Code_List: '',
       companyName: "",
       isThreeInOne: false,
       // business lience info.
@@ -55,6 +56,7 @@ module.exports = {
   getIEItemFromData: function(data) {
     return {
       companyInfoId: data.companyInfoId,
+      Qualification_Code_List: data.Qualification_Code_List,
       companyName: data.companyName,
       isThreeInOne: data.isThreeInOne,
       // business lience info.
@@ -104,6 +106,7 @@ module.exports = {
     return {
       Id: data.companyInfoId,
       DealerId: '',
+      Qualification_Code_List: data.Qualification_Code_List,
       IECompanyName: data.companyName,
       IsInOne: data.isThreeInOne,
 
@@ -134,6 +137,7 @@ module.exports = {
       companyInfoId: data.Id,
       companyName: data.IECompanyName,
       isThreeInOne: data.IsInOne,
+      Qualification_Code_List: data.Qualification_Code_List,
       // business lience info.
       blDate: data.BLExpireDate == "" ? null : moment(data.BLExpireDate, this.dateFormat).toDate(),
       blfile: {
@@ -181,6 +185,7 @@ module.exports = {
       companyInfoId: data.Id,
       companyName: data.IECompanyName,
       isThreeInOne: data.IsInOne,
+      Qualification_Code_List: data.Qualification_Code_List,
       // business lience info.
       blDate: data.BLExpireDate == "" ? null : moment(data.BLExpireDate, this.dateFormat).toDate(),
       blfile: {
