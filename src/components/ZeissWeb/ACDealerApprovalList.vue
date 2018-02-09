@@ -48,7 +48,7 @@
       return {
       }
     },
-    props: ['acDealerData','allowApproval'],
+    props: ['acDealerData','allowApproval','listType','relatedDealerStatus', 'relatedDealerName'], //listType: RelatedList, BeRelatedList
     components: { Loading },
     methods: {
       ShowLoadingView: function() {
@@ -90,7 +90,35 @@
         }
       },
       handleMappingApproval: function(value, status) {
-        this.$emit('acdealerapproval', value, status);
+        if(status == "Reject")    //if reject, then go to main logic
+        {
+            this.$emit('acdealerapproval', value, status);
+            return;
+        }
+        // if approve, then need check status first
+        if(this.listType == "BeRelatedList") {
+          if(this.relatedDealerStatus != "3")
+          {
+            this.$alert(this.relatedDealerName + " need approved first!", "Message", {
+              confirmButtonText: 'Confirm',
+              callback: action => {
+              }
+            });
+          } else {
+            this.$emit('acdealerapproval', value, status);
+          }
+        } else {
+          if(value.Status != "3")
+          {
+            this.$alert(value.DealNamec + " need approved first!", "Message", {
+              confirmButtonText: 'Confirm',
+              callback: action => {
+              }
+            });
+          } else {
+            this.$emit('acdealerapproval', value, status);
+          }
+        }
       },
       handleDealerClick: function(value) {
         if(value) {

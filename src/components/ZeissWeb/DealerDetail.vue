@@ -10,10 +10,16 @@
           title="Dealer Relationship"
           :visible.sync="relatedDialogVisible"
           size="large">
-          <ACDealerApprovalList :allowApproval="isLegalUser"
-                                :acDealerData="BeRelatedDealer"
+          <ACDealerApprovalList :allowApproval="isLegalUser" :listType="'BeRelatedList'"
+                                :relatedDealerStatus="dealerSummaryInfo.dealerStatus"
+                                :acDealerData="BeRelatedDealer" :relatedDealerName="dealerSummaryInfo.companyName"
                                 v-on:acdealerapproval="handleMappingApproval">
           </ACDealerApprovalList>
+    </el-dialog>
+    <el-dialog title="Dealer Permission"
+          :visible.sync="dpDialogVisible" size="large">
+        <DealerPermission v-bind:DID="dealerId" v-bind:isAllowEdit="DPCheckResult.IsMasterOfCurDealer" 
+          v-on:close="dpDialogVisible = false"></DealerPermission>
     </el-dialog>
     <el-col :span="22" :offset="1">
       <el-row class="topNav">
@@ -53,7 +59,7 @@
           <el-button  v-if="dealerSummaryInfo.dealerType != '2' "
                     v-on:click="ValidateDealerInfo('ACTIVE')" type="primary" size="small"
                   :disabled="!approvalInfo.IsAllowCurrentUserStartSIWF || dealerSummaryInfo.dealerStatus != '2'">
-            核实信息表
+            启动信息表核实流程
           </el-button>
           <el-button  v-if="dealerSummaryInfo.dealerType != '2'"
                     v-on:click="ValidateDealerInfo('INACTIVE')" type="primary" size="small"
@@ -74,13 +80,21 @@
           <el-button type="primary" size="small" v-if="IsHaveRelatedDealer" v-on:click="relatedDialogVisible = true">
             审核关联关系
           </el-button>
+          <el-button size="small" v-if="dealerSummaryInfo.dealerType == '2' "
+                     v-on:click="OpenDFPage">
+            经销商归档
+          </el-button>
+          <el-button size="small" v-on:click="dpDialogVisible = true">
+            管理权限
+          </el-button>
         </el-col>
         <el-col :span="8" :offset="1">
           <FileManager :FileName="legalFileName" :fileID="legalFileID" :dealerId="dealerId"
-                        :AllowUpload="isLegalUser" v-on:ReloadDealerInfo="ResetFileInfo">
+                        :AllowUpload="isCurLegal" v-on:ReloadDealerInfo="ResetFileInfo">
           </FileManager>
         </el-col>
       </el-row>
+      
       <el-row>
         <el-col>
           <el-tabs v-model="activeName" type="card">
@@ -94,16 +108,17 @@
               </span>
             </el-tab-pane>
             <el-tab-pane label="IE Company & Affiliated Company" name="second" v-if="dealerSummaryInfo.dealerType == '2'">
-              <ACIEView v-if="(ieCompanyData != null &&  ieCompanyData.length && ieCompanyData.length > 0) || (acDealerData != null && acDealerData.length && acDealerData.length > 0)"
+              <ACIEView
                         :ieCompanyData="ieCompanyData" :acDealerData="acDealerData"
-                        :allowApproval="true" v-on:approve="handleMappingApproval"
+                        :allowApproval="isLegalUser" v-on:approve="handleMappingApproval"
                         v-on:saveIEQ="saveIEQ" v-on:returnIEAC="ReturnIEAC"
                         :ieacStatus = "dealerSummaryInfo.ieacStatus"
                         :isAllowEditQu="isAllowEditQu" :qualificationList="qualificationList">
               </ACIEView>
-              <span v-else>
+              <!-- <span v-else>
+              v-if="(ieCompanyData != null &&  ieCompanyData.length && ieCompanyData.length > 0) || (acDealerData != null && acDealerData.length && acDealerData.length > 0)"
                 该供应商尚未提交关联公司以及进出口公司
-              </span>
+              </span> -->
             </el-tab-pane>
 
           </el-tabs>
@@ -127,6 +142,8 @@
   import FileManager from './FileManager';
   import DealerAuthCertMgr from './DealerAuthCertMgr';
   import ACDealerApprovalList from './ACDealerApprovalList';
+  import DealerPermission from './DealerPermission';
+
   var array = require('array');
 
   export default {
@@ -145,6 +162,7 @@
         legalFileID: '',
         legalFileList: null,
         isLegalUser: false,
+        isCurLegal: false,
         fileSvcUrl: defaultData.zeissFileBaseUrl,
         dialogVisible: false,
         relatedDialogVisible: false,
@@ -152,6 +170,19 @@
         BeRelatedDealer: null,
         qualificationList: null,
         isAllowEditQu: false,
+
+        dpDialogVisible: false,
+        DPCheckResult: {
+          IsCoordinatorOfCurDealer: false,
+          IsSalesOfCurDealer: false,
+          IsZMOfCurDealer: false,
+          IsRSMOfCurDealer: false,
+          IsLegalOfCurDealer: false,
+          IsControllingOfCurDealer: false,
+          IsMasterOfCurDealer: false,
+          IsCoordinator: false
+        },
+
         approvalInfo: {
           CurTasks: null,
           IsAllowCurrentUserApprove: true,
@@ -173,7 +204,8 @@
         }
       }
     },
-    components: {TopNav, DealerInfo, ACIEView, ApprovalView, FileManager, DealerAuthCertMgr, ACDealerApprovalList},
+    components: {TopNav, DealerInfo, ACIEView, ApprovalView, FileManager, 
+                DealerAuthCertMgr, ACDealerApprovalList, DealerPermission},
     watch: {
     '$route' (to, from) {
       // 对路由变化作出响应...
@@ -207,6 +239,10 @@
       Reload: function() {
         this.$router.push({name: 'DealerDetail', params: {dealerId: this.dealerId}});
       },
+      OpenDFPage: function() {
+        var url = defaultData.dfBaseUrl + "DealerFileDetail/" + this.dealerId;
+        window.open(url);
+      },
       ResetFileInfo: function(fileID, fileName) {
         this.legalFileID = fileID;
         this.legalFileName = fileName;
@@ -222,6 +258,7 @@
               var responseData = response.data.GetContractDetailDetailResult.Data;
               this.dealerInfoData = responseData.DealerInfo;
               this.dealerInfoDocData = responseData.DealerFileInfo;
+              this.DPCheckResult = responseData.dpcr;
               this.approvalInfo = responseData.ApprovalInfos;
               this.acDealerData = responseData.ACDealers;
               this.qualificationList = responseData.QualificationList;
@@ -240,6 +277,7 @@
                 this.ieCompanyData = ieCompanyArr.toArray();
               }
               this.isLegalUser = responseData.IsLegalUser;
+              this.isCurLegal = response.IsCurLegal;
               //set legal file
               if(responseData.LegalFiles && responseData.LegalFiles.length > 0)
               {
@@ -248,14 +286,20 @@
               }
               this.IsHaveRelatedDealer = responseData.IsHaveRelatedDealer;
               this.BeRelatedDealer = responseData.BeRelatedDealer;
-              if(responseData.ApprovalInfos.currentAccount && responseData.ApprovalInfos.currentAccount != ""
-                && responseData.SummaryInfo.coordinatorAccount &&  responseData.SummaryInfo.coordinatorAccount != ""
-                && responseData.ApprovalInfos.currentAccount.toUpperCase() == responseData.SummaryInfo.coordinatorAccount.toUpperCase() ) {
-                  //current user is coordinator, then allowed edit IE qualificationList
-                  this.isAllowEditQu = true;
-                } else {
-                  this.isAllowEditQu = false;
-                }
+              // if(responseData.ApprovalInfos.currentAccount && responseData.ApprovalInfos.currentAccount != ""
+              //   && responseData.SummaryInfo.coordinatorAccount &&  responseData.SummaryInfo.coordinatorAccount != ""
+              //   && responseData.ApprovalInfos.currentAccount.toUpperCase() == responseData.SummaryInfo.coordinatorAccount.toUpperCase() ) {
+              //     //current user is coordinator, then allowed edit IE qualificationList
+              //     this.isAllowEditQu = true;
+              //   } else {
+              //     this.isAllowEditQu = false;
+              //   }
+              if(this.DPCheckResult && (this.DPCheckResult.IsCoordinatorOfCurDealer || this.DPCheckResult.IsMasterOfCurDealer))
+              {
+                this.isAllowEditQu = true;
+              } else {
+                this.isAllowEditQu = false;
+              }
             } else {
               this.$message.error(response.data.GetContractDetailDetailResult.Message);
             }

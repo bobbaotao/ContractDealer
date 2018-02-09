@@ -18,7 +18,7 @@
         <el-row class="sectionDetail">
           <el-col :span="24">
             <ACDealerApprovalList :allowApproval="isAllowCurrentUserApprove"
-                                  :acDealerData="acDealerData"
+                                  :acDealerData="acDealerData" :listType="'RelatedList'"
                                   v-on:acdealerapproval="handleMappingApproval">
             </ACDealerApprovalList>
           </el-col>

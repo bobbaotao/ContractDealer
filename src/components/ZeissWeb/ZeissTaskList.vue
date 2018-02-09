@@ -17,7 +17,7 @@
           </el-table-column>
           <el-table-column label="Task Type" prop="TaskType" sortable>
               <template scope="scope">
-                {{scope.row.TaskType == "DealerInfoTask" ? "自我声明表": "经销商申请表"}}
+                {{scope.row.TaskType == "DealerInfoTask" ? "自我声明表": (scope.row.TaskType == "DealerAppTask" ? "经销商申请表" : "经销商审核表")}}
               </template>
           </el-table-column>
           <el-table-column label="Approver" prop="Approver" sortable>
@@ -88,7 +88,7 @@
           case "1":
             return "Not Started";
           case "2":
-            return "Pendding On";
+            return "Pending";
           case "3":
             return "Approved"
           case "4":
@@ -104,8 +104,11 @@
         if(task.TaskType == "DealerInfoTask")
         {
           this.$router.push({name: 'TaskDetail', params: {dealerId: task.DealerID, taskId: task.TaskID}});
-        } else {
+        } else if(task.TaskType == "DealerAppTask") {
           this.$router.push({name: 'DealerApplicationTask', params: {dealerId: task.DealerID, taskId: task.TaskID}});
+        } else {
+          var url = defaultData.dfBaseUrl + "AssessmentTaskPage/" + task.DealerID + "/" + task.AssessmentID + "/" + task.TaskID;
+          window.open(url);
         }
       }
     }

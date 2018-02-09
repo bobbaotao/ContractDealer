@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-row>
-      <el-col :span="20" :offset="2">
+      <el-col :span="22" :offset="1">
         <el-row class="middleRow">
           <el-col :span="5" :offset="1" >
             申请合同经销商类别<br />
@@ -54,23 +54,29 @@
           </el-col>
           <el-col :span="16" :offset="1" >
            <el-row class="smallRow">
+             <!-- <el-col>
+               期间/Period <el-input :disabled="!(IsAllowCurrentUserSubmit)" v-model="form.Period"
+                          type="textarea" :autosize="{ minRows: 2}"></el-input>
+             </el-col> -->
              <el-col>
-               期间/Period <el-input :disabled="!(IsAllowCurrentUserSubmit)"
-                                    v-model="form.Period"  type="textarea" :autosize="{ minRows: 2}"></el-input>
+               期间/Period  from: <el-date-picker v-model="form.AP_StartDate" :disabled="!(IsAllowCurrentUserSubmit)"
+                      size="small" type="date" placeholder="选择开始时间"></el-date-picker>
+                to: <el-date-picker v-model="form.AP_EndDate" :disabled="!(IsAllowCurrentUserSubmit)"
+                      size="small" type="date" placeholder="选择结束时间"></el-date-picker>
              </el-col>
            </el-row>
            <el-row class="smallRow">
              <el-col>
                目标/Performance Target<br />
                <el-input :disabled="!(IsAllowCurrentUserSubmit)"
-                          v-model="form.Performance_Target"  type="textarea" :autosize="{ minRows: 2}"></el-input>
+                          v-model="form.Performance_Target"  type="textarea" :autosize="{ minRows: 2, maxRows: 9}"></el-input>
              </el-col>
            </el-row>
            <el-row class="smallRow">
              <el-col>
                Assessment of Probation/考察结果评估：<br />
                <el-input :disabled="!(IsAllowCurrentUserSubmit)"
-                          v-model="form.Assessment_Probation"  type="textarea" :autosize="{ minRows: 2}"></el-input>
+                          v-model="form.Assessment_Probation"  type="textarea" :autosize="{ minRows: 2, maxRows: 9}"></el-input>
              </el-col>
            </el-row>
           </el-col>
@@ -84,21 +90,21 @@
              <el-col>
                授权期限/Authorization Period<br />
                <el-input :disabled="!(IsAllowCurrentUserSubmit)"
-                    v-model="form.Authorization_Period"  type="textarea" :autosize="{ minRows: 2}"></el-input>
+                    v-model="form.Authorization_Period"  type="textarea" :autosize="{ minRows: 2, maxRows: 9}"></el-input>
              </el-col>
            </el-row>
            <el-row class="smallRow">
              <el-col>
                产品/Product<br />
                <el-input :disabled="!(IsAllowCurrentUserSubmit)"
-                        v-model="form.Product"  type="textarea" :autosize="{ minRows: 2}"></el-input>
+                        v-model="form.Product"  type="textarea" :autosize="{ minRows: 2, maxRows: 9}"></el-input>
              </el-col>
            </el-row>
            <el-row class="smallRow">
              <el-col>
                地区和/或行业 Area and/or Industry<br />
                <el-input :disabled="!(IsAllowCurrentUserSubmit)"
-                      v-model="form.Area_Industry"  type="textarea"  :autosize="{ minRows: 2}"></el-input>
+                      v-model="form.Area_Industry"  type="textarea"  :autosize="{ minRows: 2, maxRows: 9}"></el-input>
              </el-col>
            </el-row>
           </el-col>
@@ -109,7 +115,7 @@
           </el-col>
           <el-col :span="16" :offset="1" >
            <el-input :disabled="!(IsAllowCurrentUserSubmit)"
-                    v-model="form.Dealer_QR"  type="textarea"  :autosize="{ minRows: 4}"></el-input>
+                    v-model="form.Dealer_QR"  type="textarea"  :autosize="{ minRows: 4, maxRows: 9}"></el-input>
           </el-col>
         </el-row>
         <!-- <el-row class="middleRow">
@@ -127,7 +133,7 @@
           </el-col>
           <el-col :span="16" :offset="1" >
            <el-input :disabled="!(IsAllowCurrentUserSubmit)"
-                    v-model="form.Dealer_Activity"  type="textarea"  :autosize="{ minRows: 4}"></el-input>
+                    v-model="form.Dealer_Activity"  type="textarea"  :autosize="{ minRows: 4, maxRows: 9}"></el-input>
           </el-col>
         </el-row>
         <el-row class="middleRow">
@@ -136,7 +142,7 @@
           </el-col>
           <el-col :span="16" :offset="1" >
            <el-input :disabled="!(IsAllowCurrentUserSubmit)"
-                    v-model="form.ReasonOfApplication"  type="textarea"  :autosize="{ minRows: 4}"></el-input>
+                    v-model="form.ReasonOfApplication"  type="textarea"  :autosize="{ minRows: 4, maxRows: 9}"></el-input>
           </el-col>
         </el-row>
         <el-row class="middleRow">
@@ -145,7 +151,7 @@
           </el-col>
           <el-col :span="16" :offset="1" >
            <el-input :disabled="!(IsAllowCurrentUserSubmit)"
-                      v-model="form.Dealer_EA"  type="textarea"  :autosize="{ minRows: 4}"></el-input>
+                      v-model="form.Dealer_EA"  type="textarea"  :autosize="{ minRows: 4, maxRows: 9}"></el-input>
           </el-col>
         </el-row>
         <el-row class="middleRow">
@@ -154,7 +160,7 @@
           </el-col>
           <el-col :span="16" :offset="1" >
            <el-input :disabled="!(IsAllowCurrentUserSubmit)"
-                    v-model="form.Dealer_OR"  type="textarea"  :autosize="{ minRows: 4}"></el-input>
+                    v-model="form.Dealer_OR"  type="textarea"  :autosize="{ minRows: 4, maxRows: 9}"></el-input>
           </el-col>
         </el-row>
         <el-row class="middleRow">
@@ -163,7 +169,7 @@
           </el-col>
           <el-col :span="16" :offset="1" >
            <el-input :disabled="!(IsAllowCurrentUserSubmit)"
-                      v-model="form.Dealer_Re"  type="textarea"  :autosize="{ minRows: 3}"></el-input>
+                      v-model="form.Dealer_Re"  type="textarea"  :autosize="{ minRows: 3, maxRows: 9}"></el-input>
           </el-col>
         </el-row>
         <el-row class="middleRow">
@@ -172,7 +178,7 @@
           </el-col>
           <el-col :span="16" :offset="1" >
            <el-input :disabled="!(IsAllowCurrentUserSubmit)"
-                    v-model="form.Dealer_BR"  type="textarea"  :autosize="{ minRows: 4}"></el-input>
+                    v-model="form.Dealer_BR"  type="textarea"  :autosize="{ minRows: 5, maxRows: 9}"></el-input>
           </el-col>
         </el-row>
         <el-row class="middleRow">
@@ -181,7 +187,7 @@
           </el-col>
           <el-col :span="16" :offset="1" >
            <el-input :disabled="!(IsAllowCurrentUserSubmit)"
-                    v-model="form.Dealer_EM_BR"  type="textarea" :autosize="{ minRows: 4}"></el-input>
+                    v-model="form.Dealer_EM_BR"  type="textarea" :autosize="{ minRows: 5, maxRows: 9}"></el-input>
           </el-col>
         </el-row>
         <el-row class="middleRow">
@@ -190,7 +196,7 @@
           </el-col>
           <el-col :span="16" :offset="1" >
            <el-input :disabled="!(IsAllowCurrentUserSubmit)"
-                      v-model="form.Dealer_BL_History"  type="textarea" :autosize="{ minRows: 4}"></el-input>
+                      v-model="form.Dealer_BL_History"  type="textarea" :autosize="{ minRows: 5, maxRows: 9}"></el-input>
           </el-col>
         </el-row>
       </el-col>
@@ -221,6 +227,8 @@
                Area_Industry: null,
                Assessment_Probation: null,
                Authorization_Period: null,
+               AP_StartDate: null,
+               AP_EndDate: null,
                BU: null,
                Created: "",
                CreatedBy: null,
@@ -270,10 +278,11 @@
           this.$message("Please input all dealer name");
           return false;
         }
-        if(this.form.Period == null || this.form.Period == '' ||
+        if(this.form.Authorization_Period == null || this.form.Authorization_Period == '' ||
             this.form.Performance_Target == null || this.form.Performance_Target == '' ||
             this.form.Assessment_Probation == null || this.form.Assessment_Probation == '' ||
-            this.form.Authorization_Period == null || this.form.Authorization_Period == '' ||
+            this.form.AP_StartDate == null || this.form.AP_StartDate == '' ||
+            this.form.AP_EndDate == null || this.form.AP_EndDate == '' ||
             this.form.Product == null || this.form.Product == '' ||
             this.form.Area_Industry == null || this.form.Area_Industry == '' ||
             this.form.Dealer_QR == null || this.form.Dealer_QR == '' ||
@@ -311,12 +320,12 @@
 
 <style scoped=scoped>
 .middleRow {
-  padding-top: 20px;
+  padding: 15px 3px 5px 3px;
   text-align: left;
   font-size: 12px;
 }
 .smallRow {
-  padding-top: 8px;
+  padding: 5px 5px 5px 5px;
   text-align: left;
 }
 </style>

@@ -162,7 +162,7 @@
             }
           }
         } else if(value.TaskStatus == "2"){
-          return "Pendding On"
+          return "Pending"
         }
         return "";
       },

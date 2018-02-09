@@ -12,7 +12,7 @@
           class="upload-demo"
           :action="this.fileBaseUrl + '?method=uploadDealerCert&dealerID=' + this.dealerId"
           :show-file-list="false" :on-progress="FileProcess" :on-error="FileUploadFailed"
-         :on-success="FileUploadSuccess" >
+          :on-success="FileUploadSuccess" >
           <el-button size="samll"
             type="primary" icon="upload">Upload Cert</el-button>
         </el-upload>

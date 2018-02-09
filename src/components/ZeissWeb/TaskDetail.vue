@@ -48,7 +48,7 @@
         </el-col>
         <el-col :span="8"  :offset="4">
           <FileManager :FileName="legalFileName" :fileID="legalFileID" :dealerId="dealerId"
-                        :AllowUpload="isLegalUser" v-on:ReloadDealerInfo="ResetFileInfo">
+                        :AllowUpload="isCurLegal" v-on:ReloadDealerInfo="ResetFileInfo">
           </FileManager>
         </el-col>
       </el-row>
@@ -66,8 +66,8 @@
             </el-tab-pane>
             <el-tab-pane label="IE Company & Affiliated Company" name="second" v-if="dealerSummaryInfo.dealerType == '2'">
               <ACIEView v-if="(ieCompanyData != null &&  ieCompanyData.length && ieCompanyData.length > 0) || (acDealerData != null && acDealerData.length && acDealerData.length > 0)"
-                        :ieCompanyData="ieCompanyData" :acDealerData="acDealerData"
-                        :allowApproval="taskID != ''" v-on:approve="handleMappingApproval">
+                        :ieCompanyData="ieCompanyData" :acDealerData="acDealerData" :isAllowEditQu="isAllowEditQu" 
+                        :allowApproval="isLegalUser" v-on:approve="handleMappingApproval">
               </ACIEView>
               <span v-else>
                 改供应商尚未提交关联公司以及进出口公司
@@ -115,6 +115,9 @@
         legalFileID: '',
         legalFileList: null,
         isLegalUser: false,
+        isCurLegal: false,
+        DPCheckResult: null,
+        isAllowEditQu: false,
         approvalInfo: {
           CurTasks: null,
           IsAllowCurrentUserApprove: false,
@@ -237,6 +240,7 @@
               this.dealerInfoDocData = responseData.DealerFileInfo;
               this.approvalInfo = responseData.ApprovalInfos;
               this.acDealerData = responseData.ACDealers;
+              this.DPCheckResult = responseData.dpcr;
               if(responseData.SummaryInfo != null) {
                this.dealerSummaryInfo =  responseData.SummaryInfo;
              }
@@ -253,11 +257,19 @@
               }
 
               this.isLegalUser = responseData.IsLegalUser;
+              this.isCurLegal = responseData.IsCurLegal;
               //set legal file
               if(responseData.LegalFiles && responseData.LegalFiles.length > 0)
               {
                 this.legalFileName = responseData.LegalFiles[0].FileName;
                 this.legalFileID = responseData.LegalFiles[0].FileID;
+              }
+
+              if(this.DPCheckResult && (this.DPCheckResult.IsCoordinatorOfCurDealer || this.DPCheckResult.IsMasterOfCurDealer))
+              {
+                this.isAllowEditQu = true;
+              } else {
+                this.isAllowEditQu = false;
               }
             } else {
               this.$message.error(response.data.GetContractDetailDetailResult.Message);

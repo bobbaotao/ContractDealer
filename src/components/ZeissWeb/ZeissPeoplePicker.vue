@@ -2,7 +2,7 @@
   <div>
     <el-row>
       <el-col style="text-align:left">
-        <el-autocomplete style="width:250px"
+        <el-autocomplete style="width:250px" size="mini"
             v-model="selectedUser"
             :fetch-suggestions="querySearchAsync"
             placeholder="请输入姓名，账号或者Title"
@@ -56,6 +56,19 @@
 
         });
 
+      },
+      clearSelectedUser: function() {
+        this.userAccount = "";
+        this.email = "";
+        this.username = "";
+        this.selectedUser = "";
+      },
+      getSelectedUser: function() {
+        return {
+            Account: this.userAccount,
+            Email: this.email,
+            UserName: this.username
+        };
       },
       handleSelect: function(item) {
         this.userAccount = item.value;
