@@ -77,7 +77,7 @@
                   if(item.dealerStatus == "0" || item.dealerStatus == "1")
                   {
                     nsArr.push(item);
-                  } else if (item.dealerStatus == "2") {
+                  } else if (item.dealerStatus == "2" || item.waitApprovalMapDealerNum > 0) {
                     ipArr.push(item);
                   } else {
                     adArr.push(item);

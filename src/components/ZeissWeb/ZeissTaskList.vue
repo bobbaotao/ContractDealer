@@ -10,14 +10,16 @@
     <el-row>
       <el-col :span="24">
         <el-table :data="resultData" border stripe style="width:100%;">
-          <el-table-column label="Company Name" prop="DealerName" sortable>
+          <el-table-column label="Company Name" prop="DealerName" sortable width="350">
             <template scope="scope">
-              <a v-on:click="GotoDealerDetail(scope.row)">{{scope.row.DealerName}}</a>
+              <span class="taskTitle">
+                <a v-on:click="GotoDealerDetail(scope.row)">{{scope.row.DealerName}}</a>
+              </span>
             </template>
           </el-table-column>
           <el-table-column label="Task Type" prop="TaskType" sortable>
               <template scope="scope">
-                {{scope.row.TaskType == "DealerInfoTask" ? "自我声明表": (scope.row.TaskType == "DealerAppTask" ? "经销商申请表" : "经销商审核表")}}
+                {{scope.row.TaskType == "DealerInfoTask" ? "自我声明表": (scope.row.TaskType == "DealerAppTask" ? "经销商申请表" : "经销商评估表")}}
               </template>
           </el-table-column>
           <el-table-column label="Approver" prop="Approver" sortable>
@@ -116,4 +118,8 @@
 </script>
 
 <style scoped="scoped">
+.taskTitle{
+  text-align: left;
+  margin-left: 12px;
+}
 </style>

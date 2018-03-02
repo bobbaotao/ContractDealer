@@ -1,5 +1,16 @@
 <template>
   <el-row class="mainDiv">
+    <el-dialog v-if="IsHaveRelatedDealer"
+          title="Dealer Relationship"
+          :visible.sync="relatedDialogVisible"
+          size="large">
+          <ACDealerApprovalList :allowApproval="false" :listType="'BeRelatedList'"
+                                :relatedDealerStatus="dealerSummaryInfo.dealerStatus"
+                                :acDealerData="BeRelatedDealer" 
+                                :relatedDealerName="dealerSummaryInfo.companyName"
+                                v-on:acdealerapproval="handleMappingApproval">
+          </ACDealerApprovalList>
+    </el-dialog>
     <el-col :span="22" :offset="1">
       <el-row class="topNav">
         <el-col>
@@ -22,7 +33,7 @@
         </el-col>
       </el-row>
       <el-row style="padding-top:5px; padding-bottom:5px;">
-        <el-col :span="12" style="text-align:left">
+        <el-col :span="15" style="text-align:left">
           <!-- <el-button  :disabled = " !approvalInfo.IsAllowCurrentUserStartSIWF"
                       v-on:click="StartSIWF" type="primary" size="small">
             启动自我声明表审批
@@ -45,8 +56,12 @@
                   :disabled="!approvalInfo.IsAllowCurrentUserStartSIWF  || dealerSummaryInfo.dealerStatus == '1'">
             退回供应商信息表
           </el-button>
+          <el-button type="primary" size="small" v-if="IsHaveRelatedDealer" 
+            v-on:click="relatedDialogVisible = true">
+            审核关联关系
+          </el-button>
         </el-col>
-        <el-col :span="8"  :offset="4">
+        <el-col :span="8"  :offset="1">
           <FileManager :FileName="legalFileName" :fileID="legalFileID" :dealerId="dealerId"
                         :AllowUpload="isCurLegal" v-on:ReloadDealerInfo="ResetFileInfo">
           </FileManager>
@@ -96,6 +111,7 @@
   import ACIEView from './ACIEView';
   import ApprovalView from './ApprovalView';
   import FileManager from './FileManager';
+  import ACDealerApprovalList from './ACDealerApprovalList';
 
   var array = require('array');
 
@@ -118,6 +134,11 @@
         isCurLegal: false,
         DPCheckResult: null,
         isAllowEditQu: false,
+
+        relatedDialogVisible: false,
+        IsHaveRelatedDealer: false,
+        BeRelatedDealer: null,
+
         approvalInfo: {
           CurTasks: null,
           IsAllowCurrentUserApprove: false,
@@ -139,7 +160,7 @@
         }
       }
     },
-    components: {TopNav, DealerInfo, ACIEView, ApprovalView,FileManager},
+    components: {TopNav, DealerInfo, ACIEView, ApprovalView,FileManager, ACDealerApprovalList},
     watch: {
     '$route' (to, from) {
       // 对路由变化作出响应...
@@ -264,6 +285,8 @@
                 this.legalFileName = responseData.LegalFiles[0].FileName;
                 this.legalFileID = responseData.LegalFiles[0].FileID;
               }
+              this.IsHaveRelatedDealer = responseData.IsHaveRelatedDealer;
+              this.BeRelatedDealer = responseData.BeRelatedDealer;
 
               if(this.DPCheckResult && (this.DPCheckResult.IsCoordinatorOfCurDealer || this.DPCheckResult.IsMasterOfCurDealer))
               {

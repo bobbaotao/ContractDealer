@@ -165,9 +165,11 @@
         isCurLegal: false,
         fileSvcUrl: defaultData.zeissFileBaseUrl,
         dialogVisible: false,
+
         relatedDialogVisible: false,
         IsHaveRelatedDealer: false,
         BeRelatedDealer: null,
+        
         qualificationList: null,
         isAllowEditQu: false,
 
@@ -430,6 +432,7 @@
           this.$message.error(error.message);
         });
       },
+
       handleMappingApproval: function(mappingValue, status) {
         var requestUrl = defaultData.cdServiceUrl +  "/ApproveDealerMapping"; //"/" + value.MappingId + "/";
         if(status == "Reject") {
@@ -492,7 +495,7 @@
           {
             this.BeRelatedDealer = response.data.LoadBeRelatedDealerResult.Data;
           } else if (response.status == "200") {
-              this.$message.error(response.data.LoadBeRelatedDealerResult.Message);
+            this.$message.error(response.data.LoadBeRelatedDealerResult.Message);
           } else {
             this.$message.error(response.message);
           }
@@ -514,7 +517,7 @@
 
             this.LoadBeRelatedDealerFromServer();
           } else if (response.status == "200") {
-              this.$message.error(response.data.LoadACDealerInfoResult.Message);
+            this.$message.error(response.data.LoadACDealerInfoResult.Message);
           } else {
             this.$message.error(response.message);
           }

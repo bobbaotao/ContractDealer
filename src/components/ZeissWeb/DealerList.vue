@@ -45,7 +45,7 @@
             </el-tooltip>
           </template>
         </el-table-column>
-        <el-table-column label="Related Status" prop="beMappedDealerNum" sortable
+        <el-table-column label="Related Status" prop="waitApprovalMapDealerNum" sortable
         v-if="dealerType != '2'" min-width="110">
           <template scope="scope">
             <el-tooltip placement="left">
@@ -163,7 +163,13 @@
         if(value.TotalACDealer == 0){
             return "无关系公司";
         }
-        if(value.waitApprovedACDealer > 0 && value.dealerInfoWaitApprovedACDealer == 0
+        if(value.waitApprovedACDealer > 0 || value.waitApprovedACDealer > 0)
+        {
+            var totalPendingDealer =  value.waitApprovedACDealer + value.waitApprovedACDealer;
+            return totalPendingDealer + "待审";
+        }
+        return "无待审关系公司";
+        /* if(value.waitApprovedACDealer > 0 && value.dealerInfoWaitApprovedACDealer == 0
             && value.notSubmittedACDealer == 0) {
             return value.waitApprovedACDealer + "关系待审";
         }
@@ -190,13 +196,14 @@
             return msg;
         }
         return value.waitApprovedACDealer + " | " + value.dealerInfoWaitApprovedACDealer + " | " + value.notSubmittedACDealer;
+       */
       },
       GetBeRelatedDealerStatusMsg: function(value) {
           if(value.waitApprovalMapDealerNum > 0) {
             return value.waitApprovalMapDealerNum + "关系待审";
           }
-          var msg = "";
-          if(value.approvedMapDealerNum > 0) {
+          var msg = "无待审";
+          /* if(value.approvedMapDealerNum > 0) {
             msg = value.approvedMapDealerNum + "通过";
           }
           if(value.rejectedMapDealerNum > 0) {
@@ -204,7 +211,7 @@
               msg = msg + " | ";
             }
             msg = msg + value.rejectedMapDealerNum + "拒绝";
-          }
+          } */
           return msg;
       },
       FilterBoundData: function(ev) {
@@ -255,16 +262,17 @@
         if(data) {
           //first try format datas
           data.forEach((item, index) => {
-            item.ACCompanyStatus = this.GetStatusByValue(item.ACCompanyStatus ? item.ACCompanyStatus.toString() : "");
-            item.dealerInfo_status = this.GetStatusByValue(item.dealerInfo_status ? item.dealerInfo_status.toString(): "");
-            item.dealer_mapping_status = this.GetMappingStatusByValue(item.dealer_mapping_status? item.dealer_mapping_status.toString() : "");
-            item.dealer_status = this.GetStatusByValue(item.dealer_status? item.dealer_status.toString() : 0);
+            item.ACCompanyStatus = item.IsACDealer == 0 ? (this.GetStatusByValue(item.ACCompanyStatus ? item.ACCompanyStatus.toString() : "")) : "";
+            item.dealerInfo_status = item.IsACDealer == 0 ? (this.GetStatusByValue(item.dealerInfo_status ? item.dealerInfo_status.toString(): "")) : "";
+            item.dealer_mapping_status = item.IsACDealer == 0 ? (this.GetMappingStatusByValue(item.dealer_mapping_status? item.dealer_mapping_status.toString() : "")) : "";
+            item.dealer_status = item.IsACDealer == 0 ? (this.GetStatusByValue(item.dealer_status? item.dealer_status.toString() : 0)) : "";
+            item.IsACDealer = item.IsACDealer == 0 ? "Affiliated Company" : "IE Compnay";
           });
 
-          var exportedData = [["主公司","Division","Sales Region","主公司信息表状态", "主公司关联关系是否提交",
+          var exportedData = [["主公司","Division","Sales Region","IECompnay Or Affiliated Company","主公司信息表状态", "主公司关联关系是否提交",
             "被关联公司", "被关联公司信息表状态", " 关联关系状态"]].concat(data.map((item, index) => {
               return [
-                item.company_name, item.division, item.sales_Region, item.dealerInfo_status, item.dealer_status,
+                item.company_name, item.division, item.sales_Region, item.IsACDealer, item.dealerInfo_status, item.dealer_status,
                 item.ACCompanyName, item.ACCompanyStatus, item.dealer_mapping_status
               ];
             }));
