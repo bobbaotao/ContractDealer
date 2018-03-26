@@ -74,9 +74,10 @@
               发起项目审批流程
             </el-button>
           </a> -->
+          <!-- commit at 2018/03/05, move this part to dealer file system
           <el-button type="primary" size="small" v-on:click="dialogVisible = true">
             管理经销商资格证
-          </el-button>
+          </el-button> -->
           <el-button type="primary" size="small" v-if="IsHaveRelatedDealer" v-on:click="relatedDialogVisible = true">
             审核关联关系
           </el-button>
@@ -107,12 +108,12 @@
                 该供应商尚未提交信息表
               </span>
             </el-tab-pane>
-            <el-tab-pane label="IE Company & Affiliated Company" name="second" v-if="dealerSummaryInfo.dealerType == '2'">
+            <el-tab-pane label="IE Company & Related Company" name="second" v-if="dealerSummaryInfo.dealerType == '2'">
               <ACIEView
                         :ieCompanyData="ieCompanyData" :acDealerData="acDealerData"
                         :allowApproval="isLegalUser" v-on:approve="handleMappingApproval"
-                        v-on:saveIEQ="saveIEQ" v-on:returnIEAC="ReturnIEAC"
-                        :ieacStatus = "dealerSummaryInfo.ieacStatus"
+                        v-on:saveIEQ="saveIEQ" v-on:returnIEAC="ReturnIEAC" :CurDealerName="dealerSummaryInfo.companyName"
+                        :ieacStatus = "dealerSummaryInfo.ieacStatus" :CurrentDealerStatus="dealerSummaryInfo.dealerStatus"
                         :isAllowEditQu="isAllowEditQu" :qualificationList="qualificationList">
               </ACIEView>
               <!-- <span v-else>
@@ -279,7 +280,7 @@
                 this.ieCompanyData = ieCompanyArr.toArray();
               }
               this.isLegalUser = responseData.IsLegalUser;
-              this.isCurLegal = response.IsCurLegal;
+              this.isCurLegal = responseData.IsCurLegal;
               //set legal file
               if(responseData.LegalFiles && responseData.LegalFiles.length > 0)
               {

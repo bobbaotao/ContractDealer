@@ -27,9 +27,9 @@
             {{GetMappingStatus(scope.row)}}
           </template>
         </el-table-column>
-        <el-table-column label="Related Status" prop="waitApprovedACDealer" sortable v-if="dealerType == '2'" min-width="110">
+        <el-table-column label="是否存在待审关系" prop="isNeedACApproval" sortable v-if="dealerType == '2'" min-width="110">
           <template scope="scope">
-            <el-tooltip placement="left">
+            <!-- <el-tooltip placement="left">
               <div slot="content">
                 {{scope.row.TotalACDealer}} Total related dealer<br />
                 {{scope.row.waitApprovedACDealer}} relationship waiting for approval<br />
@@ -42,13 +42,19 @@
               <div>
                 {{GetRelatedDealerStatusMsg(scope.row)}}
               </div>
-            </el-tooltip>
+            </el-tooltip> -->
+              <div>
+                {{GetRelatedDealerStatusMsg(scope.row)}}
+              </div>
           </template>
         </el-table-column>
-        <el-table-column label="Related Status" prop="waitApprovalMapDealerNum" sortable
+        <el-table-column label="是否存在待审关系" prop="isNeedACApproval" sortable
         v-if="dealerType != '2'" min-width="110">
           <template scope="scope">
-            <el-tooltip placement="left">
+             <div>
+                {{GetBeRelatedDealerStatusMsg(scope.row)}}
+              </div>
+            <!-- <el-tooltip placement="left">
               <div slot="content">
                 {{scope.row.beMappedDealerNum}} Total related dealer<br />
                 {{scope.row.approvedMapDealerNum}} relationship got approved<br />
@@ -58,7 +64,7 @@
               <div>
                 {{GetBeRelatedDealerStatusMsg(scope.row)}}
               </div>
-            </el-tooltip>
+            </el-tooltip> -->
           </template>
         </el-table-column>
         <el-table-column label="Division" prop="division" sortable min-width="90">
@@ -160,15 +166,15 @@
       },
       GetRelatedDealerStatusMsg: function(value) {
         //TODO
-        if(value.TotalACDealer == 0){
-            return "无关系公司";
-        }
-        if(value.waitApprovedACDealer > 0 || value.waitApprovedACDealer > 0)
+        // if(value.TotalACDealer == 0){
+        //     return "无关系公司";
+        // }
+        if(value.isNeedACApproval > 0)
         {
-            var totalPendingDealer =  value.waitApprovedACDealer + value.waitApprovedACDealer;
-            return totalPendingDealer + "待审";
+            //var totalPendingDealer =  value.waitApprovedACDealer + value.waitApprovedACDealer;
+            return "有待审关系";
         }
-        return "无待审关系公司";
+        return "无待审关系";
         /* if(value.waitApprovedACDealer > 0 && value.dealerInfoWaitApprovedACDealer == 0
             && value.notSubmittedACDealer == 0) {
             return value.waitApprovedACDealer + "关系待审";
@@ -199,10 +205,10 @@
        */
       },
       GetBeRelatedDealerStatusMsg: function(value) {
-          if(value.waitApprovalMapDealerNum > 0) {
-            return value.waitApprovalMapDealerNum + "关系待审";
+          if(value.isNeedACApproval > 0) {
+            return "有待审关系";
           }
-          var msg = "无待审";
+          var msg = "无待审关系";
           /* if(value.approvedMapDealerNum > 0) {
             msg = value.approvedMapDealerNum + "通过";
           }

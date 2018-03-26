@@ -98,7 +98,7 @@
                   || item.ieacStatus == "0" || item.ieacStatus == "1")
                   {
                     nsArr.push(item);
-                  } else if (item.dealerStatus == "2" || item.waitApprovedACDealer > 0 || item.dealerInfoWaitApprovedACDealer > 0) {
+                  } else if (item.dealerStatus == "2" || item.isNeedACApproval> 0) {
                     ipArr.push(item);
                   } else {
                     adArr.push(item);

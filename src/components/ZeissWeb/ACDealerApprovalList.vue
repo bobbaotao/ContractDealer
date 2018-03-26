@@ -12,12 +12,12 @@
               <span class="smallFont">{{ GetStatus(scope.row) }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="关联状态" min-width="80">
+        <el-table-column label="关系状态" min-width="80">
           <template scope="scope">
               <span class="smallFont">{{ GetMappingStatus(scope.row) }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="关联说明文件" min-width="170">
+        <el-table-column label="关系说明文件" min-width="170">
           <template scope="scope">
             <div v-for="docInfo of scope.row.MappingDocs">
               <a :href="GetFileUrl(docInfo)">{{docInfo.FileName}}</a>
@@ -26,10 +26,12 @@
         </el-table-column>
         <el-table-column label="操作" min-width="90" v-if="allowApproval">
           <template scope="scope">
-            <el-button size="small" type="primary" :disabled="scope.row.MappingStatus == 2" v-on:click="handleMappingApproval(scope.row, 'Approve')">
+            <el-button size="small" type="primary" :disabled="scope.row.MappingStatus != 1" 
+            v-on:click="handleMappingApproval(scope.row, 'Approve')">
               Approve
             </el-button>
-            <el-button size="small" type="primary" :disabled="scope.row.MappingStatus == 3"  v-on:click="handleMappingApproval(scope.row, 'Reject')">
+            <el-button size="small" type="primary" :disabled="scope.row.MappingStatus != 1"  
+            v-on:click="handleMappingApproval(scope.row, 'Reject')">
               Reject
             </el-button>
           </template>
@@ -97,20 +99,33 @@
         }
         // if approve, then need check status first
         if(this.listType == "BeRelatedList") {
-          if(this.relatedDealerStatus != "3")
+          if(this.relatedDealerStatus != "3" && this.relatedDealerStatus != "2")
           {
-            this.$alert(this.relatedDealerName + " need approved first!", "Message", {
+            this.$alert(this.relatedDealerName + " need submit first!", "Message", {
               confirmButtonText: 'Confirm',
               callback: action => {
               }
             });
-          } else {
+          } else if(value.Status != "3" && value.Status != "2") {
+            this.$alert(value.DealNamec + " need submit and validated by Coordinator first!", "Message", {
+              confirmButtonText: 'Confirm',
+              callback: action => {
+              }
+            });
+          }
+           else {
             this.$emit('acdealerapproval', value, status);
           }
         } else {
-          if(value.Status != "3")
+          if(value.Status != "3" && value.Status != "2")
           {
-            this.$alert(value.DealNamec + " need approved first!", "Message", {
+            this.$alert(value.DealNamec + " need submit first!", "Message", {
+              confirmButtonText: 'Confirm',
+              callback: action => {
+              }
+            });
+          } else if(this.relatedDealerStatus != "3" && this.relatedDealerStatus != "2") {
+              this.$alert(this.relatedDealerName + " need submit and validated by Coordinator first!", "Message", {
               confirmButtonText: 'Confirm',
               callback: action => {
               }

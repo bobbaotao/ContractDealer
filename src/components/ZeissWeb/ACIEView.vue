@@ -17,9 +17,10 @@
         </el-row>
         <el-row class="sectionDetail">
           <el-col :span="24">
-            <ACDealerApprovalList :allowApproval="isAllowCurrentUserApprove"
-                                  :acDealerData="acDealerData" :listType="'RelatedList'"
-                                  v-on:acdealerapproval="handleMappingApproval">
+            <ACDealerApprovalList :allowApproval="isAllowCurrentUserApprove" 
+                    :relatedDealerStatus="CurrentDealerStatus" :relatedDealerName="CurDealerName"
+                    :acDealerData="acDealerData" :listType="'RelatedList'"
+                    v-on:acdealerapproval="handleMappingApproval">
             </ACDealerApprovalList>
           </el-col>
         </el-row>
@@ -64,7 +65,7 @@
         isInEdit: false
       }
     },
-    props: ['ieCompanyData','acDealerData','allowApproval', 'isAllowEditQu', 'qualificationList', 'ieacStatus'],
+    props: ['ieCompanyData','acDealerData','allowApproval', 'isAllowEditQu', 'qualificationList', 'ieacStatus', 'CurrentDealerStatus', 'CurDealerName'],
     components: {IECompanyList,ACDealerApprovalList},
     watch: {
       allowApproval: function(newvalue) {

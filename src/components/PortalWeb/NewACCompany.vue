@@ -1,4 +1,5 @@
 <template>
+  <div>
     <el-row>
       <el-col :span="12" >
         <el-form :model="acFormData" ref="acFormData"  class="demo-dynamic" label-width="180px">
@@ -27,6 +28,8 @@
         填入公司名之后请先点击“检查是否注册”验证此公司是否已被邀请，未被邀请的公司在点击关联时会收到注册邮件，请联系被邀请的公司完成注册！
       </el-col>
     </el-row>
+  </div>
+    
 </template>
 
 <script>

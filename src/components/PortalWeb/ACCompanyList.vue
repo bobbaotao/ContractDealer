@@ -1,4 +1,5 @@
 <template>
+<div>
   <el-row>
     <el-col :span="22" :offset="1">
       <el-table :data="CompanyDatas" border stripe style="width:100%;">
@@ -55,6 +56,16 @@
       </el-table>
     </el-col>
   </el-row>
+  <el-row class="MsgRow">
+      <el-col :span="20" :offset="2">
+        <p class="relateMsg">
+        只有以下情况可以申请成为关系公司，请上传相应关系材料：<br />
+        1.  两家公司的股东，实际控制人，董事或高级管理人员为同一人或同一公司。<br />
+        2.  两家公司的股东，实际控制人，董事或高级管理人员为直系亲属。
+        </p>
+      </el-col>
+  </el-row>
+</div>
 </template>
 
 <script>
@@ -146,5 +157,15 @@
 <style scoped>
 .smallFont {
   font-size: 11px;
+}
+.MsgRow
+{
+  margin: 6px 0px;
+}
+.relateMsg
+{
+  text-align: left;
+  font-size: 14px;
+  font-weight: bold;
 }
 </style>

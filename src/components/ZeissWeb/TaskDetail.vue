@@ -79,9 +79,11 @@
                 该供应商尚未提交信息表
               </span>
             </el-tab-pane>
-            <el-tab-pane label="IE Company & Affiliated Company" name="second" v-if="dealerSummaryInfo.dealerType == '2'">
+            <el-tab-pane label="IE Company & Related Company" name="second" v-if="dealerSummaryInfo.dealerType == '2'">
               <ACIEView v-if="(ieCompanyData != null &&  ieCompanyData.length && ieCompanyData.length > 0) || (acDealerData != null && acDealerData.length && acDealerData.length > 0)"
-                        :ieCompanyData="ieCompanyData" :acDealerData="acDealerData" :isAllowEditQu="isAllowEditQu" 
+                        :ieCompanyData="ieCompanyData" :acDealerData="acDealerData" 
+                        :isAllowEditQu="isAllowEditQu" :CurrentDealerStatus="dealerSummaryInfo.dealerStatus"
+                        :CurDealerName="dealerSummaryInfo.companyName"
                         :allowApproval="isLegalUser" v-on:approve="handleMappingApproval">
               </ACIEView>
               <span v-else>
