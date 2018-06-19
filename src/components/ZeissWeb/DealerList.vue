@@ -1,9 +1,10 @@
 <template>
   <div>
     <el-row style="padding-top:5px;padding-bottom:10px;">
-      <el-col :span="4" :offset="2">
-        <el-input v-model="filterKey" placeholder="search" icon="search" size="small"
-              :on-icon-click="FilterBoundData">
+      <el-col :span="5" :offset="1">
+        <el-input v-model="filterKey" placeholder="search" size="small">
+               <i class="el-icon-search" slot="append" @click="FilterBoundData">
+            </i>
         </el-input>
       </el-col>
       <el-col :span="6" :offset="12">
@@ -11,83 +12,61 @@
       </el-col>
     </el-row>
       <el-table :data="resultData" border stripe style="width:100%;">
-        <el-table-column label="Company Name" prop="companyName" sortable  min-width="150">
+        <el-table-column label="Company Name" prop="companyName" sortable >
           <template scope="scope">
             <a v-on:click="GotoDealerDetail(scope.row.dealerID)">{{scope.row.companyName}}</a>
           </template>
         </el-table-column>
-        <el-table-column label="Dealer Status" prop="dealerStatus" sortable min-width="100">
+        <el-table-column label="Dealer Status" prop="dealerStatus" sortable width="150">
           <template scope="scope">
             {{GetStatus(scope.row)}}
           </template>
         </el-table-column>
-        <el-table-column label="IEAC Status" prop="ieacStatus" sortable v-if="dealerType == '9'" min-width="110">
-          <!-- no used -->
+       <!-- <el-table-column label="IEAC Status" prop="ieacStatus" sortable v-if="dealerType == '9'" min-width="110">
+          
           <template scope="scope">
             {{GetMappingStatus(scope.row)}}
           </template>
         </el-table-column>
-        <el-table-column label="是否存在待审关系" prop="isNeedACApproval" sortable v-if="dealerType == '2'" min-width="110">
+        -->
+        <el-table-column label="是否存在待审关系" prop="isNeedACApproval" sortable width="165">
           <template scope="scope">
-            <!-- <el-tooltip placement="left">
-              <div slot="content">
-                {{scope.row.TotalACDealer}} Total related dealer<br />
-                {{scope.row.waitApprovedACDealer}} relationship waiting for approval<br />
-                {{scope.row.ApprovedACDealer}} relationship got approved<br />
-                {{scope.row.RejectedACDealer}} relationship got rejected<br />
-                {{scope.row.dealerInfoWaitApprovedACDealer}} dealer info waiting for approval<br />
-                {{scope.row.dealerInfoApprovedACDealer}} dealer info already approved<br />
-                {{scope.row.notSubmittedACDealer}} dealer info not submit
-              </div>
               <div>
-                {{GetRelatedDealerStatusMsg(scope.row)}}
-              </div>
-            </el-tooltip> -->
-              <div>
-                {{GetRelatedDealerStatusMsg(scope.row)}}
+                {{dealerType == '2' ? GetRelatedDealerStatusMsg(scope.row) : GetBeRelatedDealerStatusMsg(scope.row)}}
               </div>
           </template>
         </el-table-column>
-        <el-table-column label="是否存在待审关系" prop="isNeedACApproval" sortable
-        v-if="dealerType != '2'" min-width="110">
+       <!-- 
+         <el-table-column label="是否存在待审关系" prop="isNeedACApproval" sortable
+        v-if="dealerType != '2'" width="165">
           <template scope="scope">
              <div>
                 {{GetBeRelatedDealerStatusMsg(scope.row)}}
               </div>
-            <!-- <el-tooltip placement="left">
-              <div slot="content">
-                {{scope.row.beMappedDealerNum}} Total related dealer<br />
-                {{scope.row.approvedMapDealerNum}} relationship got approved<br />
-                {{scope.row.rejectedMapDealerNum}} relationship got rejected<br />
-                {{scope.row.waitApprovalMapDealerNum}} relationship waiting for approval
-              </div>
-              <div>
-                {{GetBeRelatedDealerStatusMsg(scope.row)}}
-              </div>
-            </el-tooltip> -->
           </template>
         </el-table-column>
-        <el-table-column label="Division" prop="division" sortable min-width="90">
+        -->
+        <el-table-column label="Division" prop="division" sortable width="120">
           <template scope="scope">
             {{scope.row.division}}
           </template>
         </el-table-column>
-        <el-table-column label="Sales Region" prop="salesRegion" sortable  min-width="110">
+        <el-table-column label="Sales Region" prop="salesRegion" sortable  width="150">
           <template scope="scope">
             {{scope.row.salesRegion}}
           </template>
         </el-table-column>
-        <el-table-column label="Sales" prop="sales" sortable  min-width="100">
+        <el-table-column label="Sales" prop="sales" sortable  width="150">
           <template scope="scope">
               {{scope.row.sales}}
           </template>
         </el-table-column>
-        <el-table-column label="Coordinator" prop="coordinator" sortable  min-width="100">
+        <el-table-column label="Coordinator" prop="coordinator" sortable  width="150">
           <template scope="scope">
               {{scope.row.coordinator}}
           </template>
         </el-table-column>
-        <el-table-column label="Created" prop="created" sortable  min-width="90">
+        <el-table-column label="Created" prop="created" sortable  width="120">
           <template scope="scope">
               {{GetDate(scope.row.created)}}
           </template>

@@ -47,15 +47,15 @@
         <el-row style="padding-top:20px">
           <el-col>
             <!-- <el-steps :space="150" :active="activeStep">
-              <el-step v-for="item in ApprovalInfos.CurTasks" v-bind:title="item.Approver" v-bind:description="getDate(item)">
+              <el-step v-for="item in ApprovalInfos.CurTasks" v-bind:title="item.Approver" 
+              v-bind:description="getDate(item)">
                 <img class="ImgInfo" src="../../assets/process_status2.png" slot="icon" />
               </el-step>
             </el-steps> -->
-            <el-steps :space="150" :active="1" >
-              <el-step v-for="item in tasks" v-bind:title="item.Approver"
-                        v-bind:description="getDate(item)" v-bind:status="getStepStatus(item)"
-                        v-bind:icon="getIcon(item)">
-
+            <el-steps align-center >
+              <el-step v-for="item in tasks" v-bind:key="item.TaskId" v-bind:title="item.Approver"
+                        v-bind:description="getDate(item)" v-bind:icon="getIcon(item)" v-bind:status="getStepStatus(item)">
+                  <!-- <i :class="getIcon(item)" slot="icon"></i> -->
               </el-step>
             </el-steps>
           </el-col>
@@ -132,7 +132,12 @@
                     dealer_id: "",
                     order: 99
           });
-          this.activeStep = aStep;
+          if(defaultCompleteStatus == "1")
+          {
+            this.activeStep = aStep;
+          } else {
+            this.activeStep = aStep + 1;
+          }
           this.tasks = tasks;
         } else {
           this.tasks = null;
@@ -172,11 +177,11 @@
       getStepStatus: function(value) {
         if(value.TaskStatus == "3")
         {
-          return "success";
+          return "finish";
         }
         else if(value.TaskStatus == "4")
         {
-          return "error";
+          return "finish";
         }
         else if(value.TaskStatus == "2")
         {
@@ -187,15 +192,15 @@
       getIcon: function(task) {
         switch (task.TaskStatus) {
           case "1":
-            return "";
+            return "el-icon-time";
           case "2":
-            return "information";
+            return "el-icon-question";
           case "3":
-            return "circle-check";
+            return "el-icon-success";
           case "4":
-            return "circle-close";
+            return "el-icon-error";
           default:
-            return "";
+            return "el-icon-time";
         }
       },
       taskApproval: function(approvalStatus) {

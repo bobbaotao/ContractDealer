@@ -1,47 +1,45 @@
 <template>
   <div>
     <el-row style="padding-top:5px;padding-bottom:10px;">
-      <el-col :span="4" :offset="2">
-        <el-input v-model="filterKey" placeholder="search" icon="search" size="small"
-              :on-icon-click="FilterBoundData">
+      <el-col :span="5" :offset="1">
+        <el-input v-model="filterKey" placeholder="search" size="small">
+            <i class="el-icon-search" slot="append" @click="FilterBoundData">
+            </i>
         </el-input>
       </el-col>
     </el-row>
-    <el-row>
-      <el-col :span="24">
         <el-table :data="resultData" border stripe style="width:100%;">
-          <el-table-column label="Company Name" prop="DealerName" sortable width="350">
+          <el-table-column label="Company Name" prop="DealerName" sortable>
             <template scope="scope">
               <span class="taskTitle">
                 <a v-on:click="GotoDealerDetail(scope.row)">{{scope.row.DealerName}}</a>
               </span>
             </template>
           </el-table-column>
-          <el-table-column label="Task Type" prop="TaskType" sortable>
+          <el-table-column label="Task Type" prop="TaskType" sortable  width="200">
               <template scope="scope">
                 {{scope.row.TaskType == "DealerInfoTask" ? "自我声明表": (scope.row.TaskType == "DealerAppTask" ? "经销商申请表" : "经销商评估表")}}
               </template>
           </el-table-column>
-          <el-table-column label="Approver" prop="Approver" sortable>
+          <el-table-column label="Approver" prop="Approver" sortable  width="180">
           </el-table-column>
-          <el-table-column label="Status" prop="TaskStatus" sortable>
+          <el-table-column label="Status" prop="TaskStatus" sortable  width="180">
             <template scope="scope">
               {{GetStatus(scope.row)}}
             </template>
           </el-table-column>
-          <el-table-column label="Created" prop="Created" sortable>
+          <el-table-column label="Created" prop="Created" sortable  width="180">
             <template scope="scope">
               {{GetDate(scope.row.Created)}}
             </template>
           </el-table-column>
-          <el-table-column label="Modified" prop="Modified" sortable>
+          <el-table-column label="Modified" prop="Modified" sortable width="180">>
             <template scope="scope">
               {{GetDate(scope.row.Modified)}}
             </template>
           </el-table-column>
         </el-table>
-      </el-col>
-    </el-row>
+      
   </div>
 </template>
 

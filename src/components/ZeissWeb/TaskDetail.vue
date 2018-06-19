@@ -1,9 +1,7 @@
 <template>
   <el-row class="mainDiv">
-    <el-dialog v-if="IsHaveRelatedDealer"
-          title="Dealer Relationship"
-          :visible.sync="relatedDialogVisible"
-          size="large">
+    <el-dialog v-if="IsHaveRelatedDealer" title="Dealer Relationship"
+          :visible.sync="relatedDialogVisible" width="80%">
           <ACDealerApprovalList :allowApproval="false" :listType="'BeRelatedList'"
                                 :relatedDealerStatus="dealerSummaryInfo.dealerStatus"
                                 :acDealerData="BeRelatedDealer" 

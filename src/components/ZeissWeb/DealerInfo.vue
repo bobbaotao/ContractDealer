@@ -1061,7 +1061,7 @@
         Full name of legal representative of<br />
         法定代表人全名
       </el-col>
-      <el-col :span="5">
+      <el-col :span="4" :offset="1">
         {{dealerInfoData.representative}}
       </el-col>
     </el-row>
@@ -1180,5 +1180,7 @@
 }
 .zeisslink {
   word-break: break-all;
+  display: inline-block;
+
 }
 </style>

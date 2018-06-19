@@ -1,23 +1,18 @@
 <template>
   <el-row class="mainDiv">
-    <el-dialog
-          title="Dealer Authorization Certificate"
-          :visible.sync="dialogVisible"
-          size="large">
+    <el-dialog title="Dealer Authorization Certificate"
+          :visible.sync="dialogVisible" width="90%">
           <DealerAuthCertMgr v-bind:dealerId="dealerId" v-on:close="dialogVisible = false"></DealerAuthCertMgr>
     </el-dialog>
-    <el-dialog v-if="IsHaveRelatedDealer"
-          title="Dealer Relationship"
-          :visible.sync="relatedDialogVisible"
-          size="large">
-          <ACDealerApprovalList :allowApproval="isLegalUser" :listType="'BeRelatedList'"
+    <el-dialog v-if="IsHaveRelatedDealer" title="Dealer Relationship"
+          :visible.sync="relatedDialogVisible" width="90%">
+          <ACDealerApprovalList :allowApproval="isCurLegal" :listType="'BeRelatedList'"
                                 :relatedDealerStatus="dealerSummaryInfo.dealerStatus"
                                 :acDealerData="BeRelatedDealer" :relatedDealerName="dealerSummaryInfo.companyName"
                                 v-on:acdealerapproval="handleMappingApproval">
           </ACDealerApprovalList>
     </el-dialog>
-    <el-dialog title="Dealer Permission"
-          :visible.sync="dpDialogVisible" size="large">
+    <el-dialog title="Dealer Permission" width="90%" :visible.sync="dpDialogVisible" >
         <DealerPermission v-bind:DID="dealerId" v-bind:isAllowEdit="DPCheckResult.IsMasterOfCurDealer" 
           v-on:close="dpDialogVisible = false"></DealerPermission>
     </el-dialog>
@@ -29,44 +24,44 @@
         </el-col>
       </el-row>
       <el-row>
-        <el-col :span="8" style="text-align:left;">
+        <el-col :span="10" style="text-align:left;">
           <span class="sectionTitle">{{dealerSummaryInfo.companyName}}</span><br />
           <span class="sectionDetail">经销商是否已提交信息表：{{GetStatus(dealerSummaryInfo.dealerStatus)}}</span><br />
-          <span class="sectionDetail">经销商是否已提交相关公司信息：{{GetMappingStatus(dealerSummaryInfo.ieacStatus)}}</span><br />
+          <span class="sectionDetail">经销商是否已提交关系公司信息：{{GetMappingStatus(dealerSummaryInfo.ieacStatus, IsRelatedDaealer)}}</span><br />
           <span class="sectionDetail">外网经销商系统用户名：{{dealerSummaryInfo.username}}</span><br />
           <span class="sectionDetail">外网经销商系统邮件地址：{{dealerSummaryInfo.email}}</span><br />
         </el-col>
-        <el-col :span="8" :offset="8" style="text-align:left;">
+        <el-col :span="6" :offset="8" style="text-align:left;">
           <span class="sectionDetail">Divison/Region：{{dealerSummaryInfo.division}} / {{dealerSummaryInfo.salesRegion}}</span><br />
           <span class="sectionDetail">Sales：{{dealerSummaryInfo.sales}}</span><br />
           <span class="sectionDetail">Coordinator：{{dealerSummaryInfo.coordinator}}</span><br />
         </el-col>
       </el-row>
       <el-row style="padding-top:5px; padding-bottom:5px;">
-        <el-col :span="15" style="text-align:left">
+        <el-col :span="17" style="text-align:left">
           <!-- <el-button  :disabled = " !approvalInfo.IsAllowCurrentUserStartSIWF"
                       v-on:click="StartSIWF" type="primary" size="small">
             启动自我声明表审批
           </el-button> -->
           <el-button  :disabled = "!approvalInfo.IsAllowCurrentUserStartSIWF" v-if="dealerSummaryInfo.dealerType == '2'"
-                      v-on:click="StartSIWF" type="primary" size="small">
+                      v-on:click="StartSIWF" type="primary" size="mini">
             启动自我声明表审批
           </el-button>
           <el-button  :disabled = "!approvalInfo.IsAllowCurrentUserStartSIWF" v-if="dealerSummaryInfo.dealerType == '2'"
-                      v-on:click="ValidateDealerInfo('INACTIVE')" type="primary" size="small">
+                    v-on:click="ValidateDealerInfo('INACTIVE')" type="primary" size="mini">
             退回供应商信息表
           </el-button>
           <el-button  v-if="dealerSummaryInfo.dealerType != '2' "
-                    v-on:click="ValidateDealerInfo('ACTIVE')" type="primary" size="small"
+                  v-on:click="ValidateDealerInfo('ACTIVE')" type="primary" size="mini"
                   :disabled="!approvalInfo.IsAllowCurrentUserStartSIWF || dealerSummaryInfo.dealerStatus != '2'">
             启动信息表核实流程
           </el-button>
           <el-button  v-if="dealerSummaryInfo.dealerType != '2'"
-                    v-on:click="ValidateDealerInfo('INACTIVE')" type="primary" size="small"
+                    v-on:click="ValidateDealerInfo('INACTIVE')" type="primary" size="mini"
                   :disabled="!approvalInfo.IsAllowCurrentUserStartSIWF  || dealerSummaryInfo.dealerStatus == '1'">
             退回供应商信息表
           </el-button>
-          <el-button type="primary" size="small" v-on:click="NavigateToApplication">
+          <el-button type="primary" size="mini" v-on:click="NavigateToApplication">
             经销商申请表
           </el-button>
           <!-- <a :href="'/_layouts/15/Zeiss.SpotDealer/NewApprovalForm.aspx?List=a1b6eb24-240e-43e3-b7c1-efd2668756c0&dealerguid=' + dealerId" _target="self">
@@ -78,18 +73,18 @@
           <el-button type="primary" size="small" v-on:click="dialogVisible = true">
             管理经销商资格证
           </el-button> -->
-          <el-button type="primary" size="small" v-if="IsHaveRelatedDealer" v-on:click="relatedDialogVisible = true">
-            审核关联关系
+          <el-button type="primary" size="mini" v-if="IsHaveRelatedDealer" v-on:click="relatedDialogVisible = true">
+            显示被关联的合同经销商
           </el-button>
-          <el-button size="small" v-if="dealerSummaryInfo.dealerType == '2' "
+          <el-button size="mini" v-if="dealerSummaryInfo.dealerType == '2' "
                      v-on:click="OpenDFPage">
             经销商归档
           </el-button>
-          <el-button size="small" v-on:click="dpDialogVisible = true">
+          <el-button size="mini" v-on:click="dpDialogVisible = true">
             管理权限
           </el-button>
         </el-col>
-        <el-col :span="8" :offset="1">
+        <el-col :span="6" :offset="1">
           <FileManager :FileName="legalFileName" :fileID="legalFileID" :dealerId="dealerId"
                         :AllowUpload="isCurLegal" v-on:ReloadDealerInfo="ResetFileInfo">
           </FileManager>
@@ -111,7 +106,7 @@
             <el-tab-pane label="IE Company & Related Company" name="second" v-if="dealerSummaryInfo.dealerType == '2'">
               <ACIEView
                         :ieCompanyData="ieCompanyData" :acDealerData="acDealerData"
-                        :allowApproval="isLegalUser" v-on:approve="handleMappingApproval"
+                        :allowApproval="isCurLegal" v-on:approve="handleMappingApproval"
                         v-on:saveIEQ="saveIEQ" v-on:returnIEAC="ReturnIEAC" :CurDealerName="dealerSummaryInfo.companyName"
                         :ieacStatus = "dealerSummaryInfo.ieacStatus" :CurrentDealerStatus="dealerSummaryInfo.dealerStatus"
                         :isAllowEditQu="isAllowEditQu" :qualificationList="qualificationList">
@@ -168,7 +163,8 @@
         dialogVisible: false,
 
         relatedDialogVisible: false,
-        IsHaveRelatedDealer: false,
+        IsHaveRelatedDealer: false,  // if is be related any dealer
+        IsRelatedDaealer: false,   //if is related any dealer
         BeRelatedDealer: null,
         
         qualificationList: null,
@@ -264,13 +260,21 @@
               this.DPCheckResult = responseData.dpcr;
               this.approvalInfo = responseData.ApprovalInfos;
               this.acDealerData = responseData.ACDealers;
+              if(responseData.ACDealers != null && responseData.ACDealers.length > 0) 
+              {
+                this.IsRelatedDaealer = true;
+              }
+              else {
+                this.IsRelatedDaealer = false;
+              }
               this.qualificationList = responseData.QualificationList;
               if(responseData.SummaryInfo != null) {
                this.dealerSummaryInfo =  responseData.SummaryInfo;
               }
               //this.ieCompanyData = responseData.IECompanys;
               this.ieCompanyData = [];
-              if(responseData.IECompanys && responseData.IECompanys.length && responseData.IECompanys.length > 0)
+              if(responseData.IECompanys && responseData.IECompanys.length 
+              && responseData.IECompanys.length > 0)
               {
                 var ieCompanyArr = new array();
                 for(var resKey in responseData.IECompanys) {
@@ -547,16 +551,30 @@
       NavigateToNewApproval: function() {
         this.$router.push({path: "/_layouts/15/Zeiss.SpotDealer/NewApprovalForm.aspx?dealerid=" + this.dealerid});
       },
-      GetMappingStatus: function(value) {
+      GetMappingStatus: function(value, isRelate) {
         switch (value) {
           case "0":
             return "未提交审核";
           case "1":
             return "未提交审核";
           case "2":
-            return "审核中";
+            if(isRelate) 
+            {
+              return "审核中";
+            } 
+            else 
+            {
+              return "没有关系公司";
+            }
           case "3":
-            return "审核通过";
+            if(isRelate) 
+            {
+              return "审核通过";
+            }
+            else 
+            {
+              return "没有关系公司";
+            }
           default:
             return "未提交审核";
         }

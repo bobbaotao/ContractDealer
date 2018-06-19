@@ -2,35 +2,35 @@
   <el-row>
     <el-col :span="22" :offset="1">
       <el-table :data="acDealerData" border stripe style="width:100%;">
-        <el-table-column label="公司名称" min-width="120">
+        <el-table-column label="公司名称" min-width="220">
           <template scope="scope">
             <a v-on:click="handleDealerClick(scope.row)">{{ scope.row.DealNamec }}</a>
           </template>
         </el-table-column>
-        <el-table-column label="经销商状态" min-width="80">
+        <el-table-column label="经销商状态" width="140">
           <template scope="scope">
-              <span class="smallFont">{{ GetStatus(scope.row) }}</span>
+              <span >{{ GetStatus(scope.row) }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="关系状态" min-width="80">
+        <el-table-column label="关系状态" width="140">
           <template scope="scope">
-              <span class="smallFont">{{ GetMappingStatus(scope.row) }}</span>
+              <span >{{ GetMappingStatus(scope.row) }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="关系说明文件" min-width="170">
+        <el-table-column label="关系说明文件" min-width="200">
           <template scope="scope">
             <div v-for="docInfo of scope.row.MappingDocs">
               <a :href="GetFileUrl(docInfo)">{{docInfo.FileName}}</a>
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="操作" min-width="90" v-if="allowApproval">
+        <el-table-column label="操作" min-width="110" v-if="allowApproval">
           <template scope="scope">
-            <el-button size="small" type="primary" :disabled="scope.row.MappingStatus != 1" 
+            <el-button size="mini" type="primary" :disabled="scope.row.MappingStatus != 1" 
             v-on:click="handleMappingApproval(scope.row, 'Approve')">
               Approve
             </el-button>
-            <el-button size="small" type="primary" :disabled="scope.row.MappingStatus != 1"  
+            <el-button size="mini" type="primary" :disabled="scope.row.MappingStatus != 1"  
             v-on:click="handleMappingApproval(scope.row, 'Reject')">
               Reject
             </el-button>

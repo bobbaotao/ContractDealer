@@ -71,6 +71,8 @@
 <style scoped>
 .zeisslink {
   word-break: break-all;
+  display: inline-block;
+
 }
 .sectionTitle2 {
   background-color: rgba(202, 219, 236);

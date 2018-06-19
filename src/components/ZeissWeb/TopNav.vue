@@ -1,6 +1,7 @@
 <template>
   <el-menu v-bind:default-active="activeIndex" class="el-menu-demo" mode="horizontal"
-            v-bind:router="false" v-on:select="handleSelect">
+            v-bind:router="false" v-on:select="handleSelect"  background-color="#6b91bc"
+            text-color="#fff" active-text-color="#ffd04b">
     <el-menu-item index="MyCD" >My Contract Dealer</el-menu-item>
     <el-menu-item index="AllCD" >All Contract Dealer</el-menu-item>
     <el-menu-item index="MyTask" >My Task</el-menu-item>

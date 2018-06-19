@@ -9,8 +9,8 @@
           </el-col>
           <el-col :span="16" :offset="1" >
             <el-radio-group v-model="form.NatureOfContractDealer" size="small">
-              <el-radio label="Probation" size="small" :disabled="!(IsAllowCurrentUserSubmit)">考察期 Probation</el-radio>
-              <el-radio label="NonProbation" size="small" :disabled="!(IsAllowCurrentUserSubmit)">非考察期 Non-probation</el-radio>
+              <el-radio :label="Probation" size="small" :disabled="!(IsAllowCurrentUserSubmit)">考察期 Probation</el-radio>
+              <el-radio :label="NonProbation" size="small" :disabled="!(IsAllowCurrentUserSubmit)">非考察期 Non-probation</el-radio>
             </el-radio-group>
           </el-col>
         </el-row>
@@ -246,7 +246,7 @@
                IsCompleteSDForm: false,
                Modified: "",
                ModifiedBy: null,
-               NatureOfContractDealer: null,
+               NatureOfContractDealer: "Probation",
                Performance_Target: null,
                Period: null,
                Product: null,

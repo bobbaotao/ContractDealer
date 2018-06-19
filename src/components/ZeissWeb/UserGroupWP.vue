@@ -3,7 +3,8 @@
         <el-row>
             <el-col class="usersSection" :span="16" :offset="1">&nbsp;
                <div class="singlePeople" v-for="item in initUserGroup">
-                   {{ item.UserName }}&nbsp;&nbsp;<el-button size="mini" icon="close" v-if="IsAllowEdit" v-on:click="deleteUser(item)"></el-button>
+                   {{ item.UserName }}&nbsp;&nbsp;<el-button circle icon="el-icon-delete" size="mini"
+                   v-if="IsAllowEdit" v-on:click="deleteUser(item)"></el-button>
                </div>
             </el-col>
             <el-col :span="6" :offset="1" v-if="IsAllowEdit" >
@@ -14,7 +15,7 @@
                 </el-row>
                 <el-row class="btnRow">
                     <el-col>
-                        <el-button size="mini" type="primary" icon="circle-plus"
+                        <el-button size="mini" type="primary" icon="el-icon-circle-plus"
                             v-on:click="handleAddUser">{{btnText}}</el-button>
                     </el-col>
                 </el-row>

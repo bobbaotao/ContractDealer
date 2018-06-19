@@ -2,12 +2,17 @@
   <div>
     <el-row>
       <el-col style="text-align:left">
-        <el-autocomplete style="width:250px" size="mini"
+        <el-autocomplete style="width:250px" size="small"
             v-model="selectedUser"
             :fetch-suggestions="querySearchAsync"
             placeholder="请输入姓名，账号或者Title"
-            @select="handleSelect" :props="acProps"
-            icon="check" :on-icon-click="checkName">
+            @select="handleSelect">
+            <i class="el-icon-search" slot="append" @click="checkName">
+            </i>
+            <template slot-scope="{item}">
+              <div class="name">{{ item.userName }} &nbsp;&nbsp;&nbsp;{{ item.value }}</div>
+              <span class="addr">{{ item.email }}</span>
+            </template>
         </el-autocomplete>
       </el-col>
     </el-row>
@@ -74,8 +79,11 @@
         this.userAccount = item.value;
         this.email = item.email;
         this.username = item.userName;
-      },
+        this.selectedUser = item.userName;
+      }
+      ,
       checkName: function() {
+        this.searchMessage = "";
         this.axiosCancelSource.cancel();
         if(this.selectedUser == null || this.selectedUser == '') {
           return;
@@ -105,4 +113,13 @@
 </script>
 
 <style scoped>
+.name {
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+    .addr {
+      font-size: 12px;
+      color: #b4b4b4;
+    }
+
 </style>
